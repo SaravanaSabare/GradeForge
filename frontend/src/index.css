@@ -244,3 +244,106 @@ select option {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.2);
 }
+
+/* ─── Animations ─── */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+
+  /* Dashboard sidebar becomes overlay */
+  .dashboard-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 100 !important;
+  }
+
+  .dashboard-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: block !important;
+  }
+
+  .dashboard-main {
+    margin-left: 0 !important;
+  }
+
+  .mobile-menu-btn {
+    display: flex !important;
+  }
+
+  /* Hero: stack columns */
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+    text-align: center;
+  }
+
+  .hero-left {
+    align-items: center !important;
+  }
+
+  .hero-cta-row {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  /* Features: stack */
+  .features-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Stats grid: 2 columns on tablet */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Dashboard bottom row: stack */
+  .dash-bottom-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Calculator: stack table and sidebar */
+  .calc-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Semester tabs: scroll horizontal */
+  .semester-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Footer */
+  .footer-inner {
+    flex-direction: column !important;
+    gap: 16px !important;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .auth-card {
+    padding: 24px 20px !important;
+  }
+
+  .dept-year-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

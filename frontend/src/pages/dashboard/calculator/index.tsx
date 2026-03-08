@@ -251,7 +251,7 @@ export default function CGPACalculator() {
                 </div>
 
                 {/* Semester Tabs */}
-                <div className="glass-panel" style={{ padding: 8, display: 'flex', gap: 4, alignItems: 'center' }}>
+                <div className="glass-panel semester-tabs" style={{ padding: 8, display: 'flex', gap: 4, alignItems: 'center' }}>
                     <button
                         onClick={() => setSemester(s => Math.max(1, s - 1))}
                         disabled={semester <= 1}
@@ -298,7 +298,7 @@ export default function CGPACalculator() {
                     </button>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 24 }}>
+                <div className="calc-grid" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 24 }}>
                     {/* Calculator Table */}
                     <div className="glass-panel" style={{ padding: 24, display: 'flex', flexDirection: 'column' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>

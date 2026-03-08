@@ -27,10 +27,10 @@ export default function Landing() {
 
             {/* Hero Section */}
             <section style={{ position: 'relative', zIndex: 10, maxWidth: 1280, margin: '0 auto', padding: '80px 2rem 100px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }}>
+                <div className="hero-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }}>
 
                     {/* Left Column */}
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', position: 'relative', zIndex: 20 }}>
+                    <div className="hero-left" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', position: 'relative', zIndex: 20 }}>
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, border: '1px solid rgba(124,92,255,0.3)', background: 'rgba(124,92,255,0.08)', color: '#00E5FF', fontSize: 13, fontWeight: 500, marginBottom: 32 }}>
                             <Sparkles size={14} />
                             Next-Gen Academic Analytics for India
@@ -45,7 +45,7 @@ export default function Landing() {
                             The ultimate academic toolkit designed for engineering students at SRM, VIT, and beyond. Calculate targets, share study materials, and build collaborative groups — all in one sleek interface.
                         </p>
 
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+                        <div className="hero-cta-row" style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
                             <Link to="/signup" className="btn btn-primary" style={{ padding: '14px 32px', fontSize: 16 }}>
                                 Launch App <ArrowRight size={18} />
                             </Link>
@@ -134,7 +134,7 @@ export default function Landing() {
                         </p>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
+                    <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
                         {[
                             { icon: Calculator, title: 'Smart CGPA Predictor', desc: 'Enter current grades, set a target, and instantly see the minimum grades needed in remaining courses to hit your goals.', color: '#7C5CFF' },
                             { icon: BookOpen, title: 'Study Material Hub', desc: 'Access a curated database of previous year papers, handwritten notes, and solved assignments uploaded by top students.', color: '#00E5FF' },
@@ -154,7 +154,7 @@ export default function Landing() {
 
             {/* Footer */}
             <footer style={{ position: 'relative', zIndex: 10, borderTop: '1px solid rgba(255,255,255,0.06)', padding: '32px 0' }}>
-                <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div className="footer-inner" style={{ maxWidth: 1280, margin: '0 auto', padding: '0 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <p style={{ fontSize: 13, color: '#64748b' }}>© 2026 GradeForge. Built for students, by students.</p>
                     <div style={{ display: 'flex', gap: 24, fontSize: 13, color: '#64748b' }}>
                         <a href="#" style={{ transition: 'color 0.2s' }}>Privacy</a>

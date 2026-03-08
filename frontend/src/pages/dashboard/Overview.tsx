@@ -107,7 +107,7 @@ export default function DashboardOverview() {
                 </div>
 
                 {/* Stats Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
+                <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
                     {stats.map((s) => (
                         <div key={s.label} className="glass-card" style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12, position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', right: -12, top: -12, width: 56, height: 56, borderRadius: '50%', pointerEvents: 'none', background: s.color, filter: 'blur(20px)', opacity: 0.1 }} />
@@ -123,7 +123,7 @@ export default function DashboardOverview() {
                 </div>
 
                 {/* Bottom Row */}
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 24 }}>
+                <div className="dash-bottom-grid" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 24 }}>
                     {/* Semester Breakdown */}
                     <div className="glass-panel" style={{ padding: 24 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
