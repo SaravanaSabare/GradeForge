@@ -332,6 +332,11 @@ select option {
     gap: 16px !important;
     text-align: center;
   }
+
+  /* Auth: hide branding panel */
+  .auth-branding {
+    display: none !important;
+  }
 }
 
 @media (max-width: 480px) {
