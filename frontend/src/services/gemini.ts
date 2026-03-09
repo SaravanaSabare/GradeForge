@@ -79,9 +79,16 @@ If you cannot identify any grades in the image, return an empty array: []`;
     });
 
     if (!response.ok) {
-        const err = await response.text();
-        console.error('Gemini API error:', err);
-        throw new Error('Failed to analyze image. Please try again.');
+        const errText = await response.text();
+        console.error('Gemini API error:', errText);
+        try {
+            const errJson = JSON.parse(errText);
+            const msg = errJson?.error?.message || errText;
+            throw new Error(`Gemini API: ${msg}`);
+        } catch (e: any) {
+            if (e.message.startsWith('Gemini API:')) throw e;
+            throw new Error(`Gemini API error (${response.status}). Check console for details.`);
+        }
     }
 
     const data = await response.json();
