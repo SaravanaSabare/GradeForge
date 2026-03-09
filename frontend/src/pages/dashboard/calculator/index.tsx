@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 import { useAuth } from '../../../contexts/AuthContext';
 import { supabase } from '../../../services/supabase';
-import { Calculator as CalcIcon, Save, Plus, Trash2, Target, Check, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { Calculator as CalcIcon, Save, Plus, Trash2, Target, Check, ChevronLeft, ChevronRight, Loader2, Camera } from 'lucide-react';
+import ScreenshotImportModal from './ScreenshotImportModal';
 
 interface GradeRow {
     id: string;
@@ -29,6 +30,7 @@ export default function CGPACalculator() {
     const [saving, setSaving] = useState(false);
     const [saved, setSaved] = useState(false);
     const [hasChanges, setHasChanges] = useState(false);
+    const [importModalOpen, setImportModalOpen] = useState(false);
 
     // Load all grades from Supabase on mount
     useEffect(() => {
@@ -238,16 +240,25 @@ export default function CGPACalculator() {
                             {profile?.universities?.grading_system || '10-point'} scale • {profile?.universities?.name || 'Your University'}
                         </p>
                     </div>
-                    <button
-                        onClick={saveGrades}
-                        disabled={saving || !hasChanges}
-                        className="btn btn-primary"
-                        style={{ fontSize: 13, gap: 8, opacity: (!hasChanges && !saved) ? 0.5 : 1, transition: 'all 0.2s' }}
-                    >
-                        {saving ? <><Loader2 size={15} className="animate-spin" /> Saving...</> :
-                            saved ? <><Check size={15} /> Saved!</> :
-                                <><Save size={15} /> Save Semester</>}
-                    </button>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                        <button
+                            onClick={() => setImportModalOpen(true)}
+                            className="btn"
+                            style={{ fontSize: 13, gap: 6, padding: '8px 14px', background: 'rgba(0,229,255,0.08)', border: '1px solid rgba(0,229,255,0.2)', color: '#00E5FF', borderRadius: 10, cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center' }}
+                        >
+                            <Camera size={15} /> Screenshot Import
+                        </button>
+                        <button
+                            onClick={saveGrades}
+                            disabled={saving || !hasChanges}
+                            className="btn btn-primary"
+                            style={{ fontSize: 13, gap: 8, opacity: (!hasChanges && !saved) ? 0.5 : 1, transition: 'all 0.2s' }}
+                        >
+                            {saving ? <><Loader2 size={15} className="animate-spin" /> Saving...</> :
+                                saved ? <><Check size={15} /> Saved!</> :
+                                    <><Save size={15} /> Save Semester</>}
+                        </button>
+                    </div>
                 </div>
 
                 {/* Semester Tabs */}
@@ -424,6 +435,27 @@ export default function CGPACalculator() {
                     </div>
                 </div>
             </div>
+
+            {/* Screenshot Import Modal */}
+            <ScreenshotImportModal
+                open={importModalOpen}
+                onClose={() => setImportModalOpen(false)}
+                onImport={(importedGrades) => {
+                    const newRows: GradeRow[] = importedGrades.map(g => ({
+                        id: crypto.randomUUID(),
+                        subject_name: g.subject_name,
+                        subject_code: g.subject_code,
+                        credits: g.credits,
+                        grade: g.grade,
+                        grade_points: g.grade_points,
+                        isNew: true,
+                        isModified: true,
+                    }));
+                    setRows(newRows);
+                    setHasChanges(true);
+                    setSaved(false);
+                }}
+            />
         </DashboardLayout>
     );
 }
