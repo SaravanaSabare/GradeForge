@@ -108,8 +108,8 @@ export default function DashboardOverview() {
 
                 {/* Stats Grid */}
                 <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
-                    {stats.map((s) => (
-                        <div key={s.label} className="glass-card" style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12, position: 'relative', overflow: 'hidden' }}>
+                    {stats.map((s, i) => (
+                        <div key={s.label} className={`glass-card card-hover-glow animate-slideUp delay-${i + 1}`} style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12, position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', right: -12, top: -12, width: 56, height: 56, borderRadius: '50%', pointerEvents: 'none', background: s.color, filter: 'blur(20px)', opacity: 0.1 }} />
                             <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 12, fontWeight: 500, color: '#94a3b8' }}>
                                 <s.icon size={16} style={{ color: s.color }} />

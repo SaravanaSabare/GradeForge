@@ -51,12 +51,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                                 key={item.name}
                                 to={item.path}
                                 onClick={() => setSidebarOpen(false)}
+                                className={`nav-item ${isActive ? 'nav-active' : ''}`}
                                 style={{
                                     display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', borderRadius: 12,
-                                    fontSize: 13, fontWeight: 500, textDecoration: 'none', transition: 'all 0.2s',
+                                    fontSize: 13, fontWeight: 500, textDecoration: 'none',
                                     color: isActive ? '#7C5CFF' : '#94a3b8',
-                                    background: isActive ? 'rgba(124,92,255,0.12)' : 'transparent',
-                                    boxShadow: isActive ? 'inset 3px 0 0 #7C5CFF' : 'none',
                                 }}
                             >
                                 <Icon size={17} />
