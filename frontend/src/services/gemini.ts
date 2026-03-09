@@ -1,10 +1,10 @@
 /**
- * Gemini Vision API service — extracts grade data from screenshots
- * Uses Gemini 2.0 Flash (free tier: 15 RPM, 1500 req/day)
+ * Groq Vision API service — extracts grade data from screenshots
+ * Uses Llama 3.2 90B Vision via Groq (free tier)
  */
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${GEMINI_API_KEY}`;
+const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 export interface ExtractedGrade {
     subject_name: string;
@@ -19,27 +19,21 @@ export interface ExtractedGrade {
 function fileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => {
-            const result = reader.result as string;
-            // Strip the data:image/...;base64, prefix
-            const base64 = result.split(',')[1];
-            resolve(base64);
-        };
+        reader.onload = () => resolve(reader.result as string);
         reader.onerror = reject;
         reader.readAsDataURL(file);
     });
 }
 
 /**
- * Sends a screenshot to Gemini Vision and extracts grade rows
+ * Sends a screenshot to Groq Vision and extracts grade rows
  */
 export async function extractGradesFromImage(file: File): Promise<ExtractedGrade[]> {
-    if (!GEMINI_API_KEY) {
-        throw new Error('Gemini API key is not configured. Add VITE_GEMINI_API_KEY to your .env file.');
+    if (!GROQ_API_KEY) {
+        throw new Error('Groq API key is not configured. Add VITE_GROQ_API_KEY to your .env file.');
     }
 
-    const base64 = await fileToBase64(file);
-    const mimeType = file.type || 'image/png';
+    const dataUrl = await fileToBase64(file);
 
     const prompt = `You are a grade extraction assistant. Analyze this screenshot of a student's academic grade report.
 
@@ -56,45 +50,43 @@ IMPORTANT: Return ONLY the JSON array, no markdown, no explanation, no code bloc
 
 If you cannot identify any grades in the image, return an empty array: []`;
 
-    const response = await fetch(GEMINI_URL, {
+    const response = await fetch(GROQ_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${GROQ_API_KEY}`,
+        },
         body: JSON.stringify({
-            contents: [{
-                parts: [
-                    { text: prompt },
-                    {
-                        inlineData: {
-                            mimeType,
-                            data: base64,
-                        },
-                    },
+            model: 'llama-3.2-90b-vision-preview',
+            messages: [{
+                role: 'user',
+                content: [
+                    { type: 'text', text: prompt },
+                    { type: 'image_url', image_url: { url: dataUrl } },
                 ],
             }],
-            generationConfig: {
-                temperature: 0.1,
-                maxOutputTokens: 2048,
-            },
+            temperature: 0.1,
+            max_tokens: 2048,
         }),
     });
 
     if (!response.ok) {
         const errText = await response.text();
-        console.error('Gemini API error:', errText);
+        console.error('Groq API error:', errText);
         try {
             const errJson = JSON.parse(errText);
             const msg = errJson?.error?.message || errText;
-            throw new Error(`Gemini API: ${msg}`);
+            throw new Error(`Groq API: ${msg}`);
         } catch (e: any) {
-            if (e.message.startsWith('Gemini API:')) throw e;
-            throw new Error(`Gemini API error (${response.status}). Check console for details.`);
+            if (e.message.startsWith('Groq API:')) throw e;
+            throw new Error(`Groq API error (${response.status}). Check console for details.`);
         }
     }
 
     const data = await response.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '[]';
+    const text = data?.choices?.[0]?.message?.content || '[]';
 
-    // Parse JSON from the response (handle potential markdown code blocks)
+    // Parse JSON from the response
     let cleaned = text.trim();
     if (cleaned.startsWith('```')) {
         cleaned = cleaned.replace(/^```json?\n?/, '').replace(/\n?```$/, '');
@@ -102,7 +94,6 @@ If you cannot identify any grades in the image, return an empty array: []`;
 
     try {
         const grades: ExtractedGrade[] = JSON.parse(cleaned);
-        // Validate and sanitize
         return grades.map(g => ({
             subject_name: String(g.subject_name || '').trim(),
             subject_code: String(g.subject_code || '').trim(),
@@ -110,7 +101,7 @@ If you cannot identify any grades in the image, return an empty array: []`;
             grade: validateGrade(String(g.grade || 'A').trim()),
         })).filter(g => g.subject_name.length > 0);
     } catch {
-        console.error('Failed to parse Gemini response:', cleaned);
+        console.error('Failed to parse Groq response:', cleaned);
         throw new Error('Could not extract grades from this image. Try a clearer screenshot.');
     }
 }
@@ -120,11 +111,9 @@ const VALID_GRADES = new Set(['O', 'A+', 'A', 'B+', 'B', 'C', 'F']);
 function validateGrade(grade: string): string {
     const upper = grade.toUpperCase();
     if (VALID_GRADES.has(upper)) return upper;
-    // Common mappings
     if (upper === 'S') return 'O';
     if (upper === 'E' || upper === 'AB' || upper === 'W') return 'F';
-    // Try closest match
     if (upper.startsWith('A')) return 'A';
     if (upper.startsWith('B')) return 'B';
-    return 'A'; // Safe default
+    return 'A';
 }
