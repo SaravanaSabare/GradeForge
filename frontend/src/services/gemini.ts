@@ -1,6 +1,6 @@
 /**
  * Groq Vision API service — extracts grade data from screenshots
- * Uses Llama 3.2 90B Vision via Groq (free tier)
+ * Uses Llama 4 Scout via Groq (free tier)
  */
 
 const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
@@ -57,7 +57,7 @@ If you cannot identify any grades in the image, return an empty array: []`;
             'Authorization': `Bearer ${GROQ_API_KEY}`,
         },
         body: JSON.stringify({
-            model: 'llama-3.2-90b-vision-preview',
+            model: 'meta-llama/llama-4-scout-17b-16e-instruct',
             messages: [{
                 role: 'user',
                 content: [
