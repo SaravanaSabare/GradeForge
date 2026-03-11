@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../contexts/AuthContext';
-import { Building2, Book, Calendar } from 'lucide-react';
+import { Building2, Book, Calendar, Hash } from 'lucide-react';
 
 interface University { id: string; name: string; }
 interface Department { id: string; name: string; }
@@ -15,6 +15,7 @@ export default function CompleteProfile() {
     const [universityId, setUniversityId] = useState('');
     const [departmentId, setDepartmentId] = useState('');
     const [year, setYear] = useState('1');
+    const [rollNumber, setRollNumber] = useState('');
     const [universities, setUniversities] = useState<University[]>([]);
     const [departments, setDepartments] = useState<Department[]>([]);
 
@@ -31,7 +32,7 @@ export default function CompleteProfile() {
         e.preventDefault();
         if (!user) return;
         setLoading(true); setError(null);
-        const { error: updateError } = await supabase.from('users').update({ university_id: universityId, department_id: departmentId, year: parseInt(year) }).eq('id', user.id);
+        const { error: updateError } = await supabase.from('users').update({ university_id: universityId, department_id: departmentId, year: parseInt(year), roll_number: rollNumber }).eq('id', user.id);
         if (updateError) { setError(updateError.message); setLoading(false); }
         else window.location.href = '/dashboard';
     };
@@ -51,6 +52,13 @@ export default function CompleteProfile() {
                 {error && <div style={{ fontSize: 13, padding: 14, borderRadius: 12, marginBottom: 24, border: '1px solid rgba(255,77,157,0.2)', background: 'rgba(255,77,157,0.08)', color: '#FF4D9D' }}>{error}</div>}
 
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                    <div>
+                        <label style={labelStyle}>Roll Number / Student ID</label>
+                        <div style={{ position: 'relative' }}>
+                            <Hash style={iconStyle} size={16} />
+                            <input type="text" placeholder="e.g. RA2211003010001" value={rollNumber} onChange={(e) => setRollNumber(e.target.value)} className="input-glass" style={{ paddingLeft: 44 }} required />
+                        </div>
+                    </div>
                     <div>
                         <label style={labelStyle}>University</label>
                         <div style={{ position: 'relative' }}>

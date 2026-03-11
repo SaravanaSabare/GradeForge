@@ -5,7 +5,7 @@ import { supabase } from '../services/supabase';
 interface AuthContextType {
     session: Session | null;
     user: User | null;
-    profile: any | null; // Database public.users profile
+    profile: any | null; // Database public.users profile (includes roll_number, role)
     loading: boolean;
     signOut: () => Promise<void>;
 }

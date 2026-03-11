@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { Calculator, BookOpen, Heart, Settings, LogOut, LayoutDashboard, Menu, X } from 'lucide-react';
+import { Calculator, BookOpen, Heart, Settings, LogOut, LayoutDashboard, Menu, X, Shield } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const { profile, signOut } = useAuth();
@@ -14,6 +14,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         { name: 'Study Materials', path: '/dashboard/materials', icon: BookOpen },
         { name: 'StudyMatch', path: '/dashboard/studymatch', icon: Heart },
     ];
+
+    if (profile?.role === 'admin' || profile?.role === 'moderator') {
+        navItems.push({ name: 'Admin Panel', path: '/dashboard/admin', icon: Shield });
+    }
 
     return (
         <div style={{ minHeight: '100vh', display: 'flex', background: '#020617' }}>

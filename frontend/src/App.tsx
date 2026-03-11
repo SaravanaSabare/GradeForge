@@ -10,6 +10,7 @@ import DashboardOverview from './pages/dashboard/Overview';
 import CGPACalculator from './pages/dashboard/calculator';
 import StudyMaterials from './pages/dashboard/materials';
 import StudyMatch from './pages/dashboard/studymatch';
+import AdminDashboard from './pages/dashboard/admin';
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const { session, profile, loading } = useAuth();
@@ -45,6 +46,7 @@ function App() {
       <Route path="/dashboard/calculator" element={<ProtectedRoute><CGPACalculator /></ProtectedRoute>} />
       <Route path="/dashboard/materials" element={<ProtectedRoute><StudyMaterials /></ProtectedRoute>} />
       <Route path="/dashboard/studymatch" element={<ProtectedRoute><StudyMatch /></ProtectedRoute>} />
+      <Route path="/dashboard/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
