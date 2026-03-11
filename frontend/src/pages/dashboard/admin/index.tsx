@@ -24,11 +24,10 @@ export default function AdminDashboard() {
                 const { data, error } = await supabase
                     .from('materials')
                     .select(`
-                        id, title, description, file_type, file_url, created_at, status, rejection_reason,
-                        uploader:users!uploader_id(name, roll_number),
-                        subjects!inner(subject_code, semester, departments!inner(university_id))
+                        id, title, description, file_type, file_url, created_at, status, rejection_reason, year, exam,
+                        uploader:users!inner(university_id, name, roll_number)
                     `)
-                    .eq('subjects.departments.university_id', profile.university_id)
+                    .eq('uploader.university_id', profile.university_id)
                     .eq('status', 'pending')
                     .order('created_at', { ascending: false });
                 
@@ -131,7 +130,7 @@ export default function AdminDashboard() {
                                     </div>
                                     <div style={{ flex: 1 }}>
                                         <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 4 }}>{m.title}</h3>
-                                        <p style={{ fontSize: 13, color: '#94a3b8', marginBottom: 8 }}>{m.subjects.subject_code} • Uploaded by {m.uploader.name} ({m.uploader.roll_number})</p>
+                                        <p style={{ fontSize: 13, color: '#94a3b8', marginBottom: 8 }}>{m.year} Year • {m.exam} • Uploaded by {m.uploader.name} ({m.uploader.roll_number})</p>
                                         <a href={m.file_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: '#7C5CFF', fontWeight: 500, textDecoration: 'underline' }}>View File</a>
                                     </div>
                                     <div style={{ display: 'flex', gap: 12 }}>

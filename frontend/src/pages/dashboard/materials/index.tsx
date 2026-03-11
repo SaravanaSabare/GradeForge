@@ -17,10 +17,8 @@ interface Material {
     status: string;
     rejection_reason?: string;
     uploader_id: string;
-    subjects: {
-        subject_code: string;
-        semester: number;
-    };
+    year: number;
+    exam: string;
 }
 
 export default function StudyMaterials() {
@@ -38,10 +36,10 @@ export default function StudyMaterials() {
         const query = supabase
             .from('materials')
             .select(`
-                id, title, description, file_type, file_url, downloads, rating, created_at, status, rejection_reason, uploader_id,
-                subjects!inner(subject_code, semester, department_id, departments!inner(university_id))
+                id, title, description, file_type, file_url, downloads, rating, created_at, status, rejection_reason, uploader_id, year, exam,
+                uploader:users!inner(university_id)
             `)
-            .eq('subjects.departments.university_id', profile.university_id)
+            .eq('uploader.university_id', profile.university_id)
             .order('created_at', { ascending: false });
 
         const { data, error } = await query;
@@ -57,7 +55,8 @@ export default function StudyMaterials() {
 
     const filteredMaterials = materials.filter(m => {
         const matchesSearch = m.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                              m.subjects.subject_code.toLowerCase().includes(searchQuery.toLowerCase());
+                              (m.exam && m.exam.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                              (m.year && m.year.toString().includes(searchQuery.toLowerCase()));
         
         if (activeTab === 'browse') {
             return matchesSearch && m.status === 'approved';
@@ -130,7 +129,7 @@ export default function StudyMaterials() {
                                 <h3 style={{ fontWeight: 600, fontSize: 15, marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                     {m.title}
                                 </h3>
-                                <p style={{ fontSize: 12, color: '#64748b', marginBottom: 12, fontWeight: 500 }}>{m.subjects.subject_code} • Semester {m.subjects.semester}</p>
+                                <p style={{ fontSize: 12, color: '#64748b', marginBottom: 12, fontWeight: 500 }}>{m.year} Year • {m.exam}</p>
                                 <p style={{ fontSize: 12, color: '#94a3b8', lineHeight: 1.6, marginBottom: 20, flex: 1, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                                     {m.description || 'No description provided.'}
                                 </p>

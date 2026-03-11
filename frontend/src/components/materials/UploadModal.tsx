@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { X, UploadCloud, FileText, CheckCircle2 } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../contexts/AuthContext';
@@ -10,7 +10,7 @@ interface UploadModalProps {
 }
 
 export default function UploadMaterialModal({ isOpen, onClose, onUploadSuccess }: UploadModalProps) {
-    const { user, profile } = useAuth();
+    const { user } = useAuth();
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -18,24 +18,8 @@ export default function UploadMaterialModal({ isOpen, onClose, onUploadSuccess }
     const [file, setFile] = useState<File | null>(null);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [subjectId, setSubjectId] = useState('');
-    const [subjects, setSubjects] = useState<{ id: string, subject_code: string, subject_name: string }[]>([]);
-
-    useEffect(() => {
-        if (!isOpen || !profile?.university_id) return;
-
-        // Fetch subjects for the user's department/university
-        const fetchSubjects = async () => {
-            const { data } = await supabase
-                .from('subjects')
-                .select('id, subject_code, subject_name')
-                .eq('department_id', profile.department_id)
-                .order('semester');
-            
-            if (data) setSubjects(data);
-        };
-        fetchSubjects();
-    }, [isOpen, profile]);
+    const [year, setYear] = useState('');
+    const [exam, setExam] = useState('');
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
@@ -45,7 +29,7 @@ export default function UploadMaterialModal({ isOpen, onClose, onUploadSuccess }
 
     const handleUpload = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!file || !user || !subjectId || !title) return;
+        if (!file || !user || !year || !exam || !title) return;
 
         setLoading(true);
         setError(null);
@@ -71,7 +55,8 @@ export default function UploadMaterialModal({ isOpen, onClose, onUploadSuccess }
             const { error: dbError } = await supabase
                 .from('materials')
                 .insert({
-                    subject_id: subjectId,
+                    year: parseInt(year),
+                    exam: exam,
                     uploader_id: user.id,
                     file_url: publicUrl,
                     file_type: file.type || fileExt,
@@ -89,7 +74,8 @@ export default function UploadMaterialModal({ isOpen, onClose, onUploadSuccess }
                 setFile(null);
                 setTitle('');
                 setDescription('');
-                setSubjectId('');
+                setYear('');
+                setExam('');
                 setSuccess(false);
             }, 2000);
 
@@ -191,21 +177,43 @@ export default function UploadMaterialModal({ isOpen, onClose, onUploadSuccess }
                                 />
                             </div>
 
-                            {/* Subject */}
-                            <div>
-                                <label style={{ display: 'block', marginBottom: 8, fontSize: 13, fontWeight: 500, color: '#cbd5e1' }}>Subject</label>
-                                <select 
-                                    value={subjectId} 
-                                    onChange={(e) => setSubjectId(e.target.value)} 
-                                    className="input-glass" 
-                                    style={{ appearance: 'none' }}
-                                    required
-                                >
-                                    <option value="" disabled>Select subject</option>
-                                    {subjects.map(sub => (
-                                        <option key={sub.id} value={sub.id}>{sub.subject_code} - {sub.subject_name}</option>
-                                    ))}
-                                </select>
+                            {/* Year & Exam Wrapper */}
+                            <div style={{ display: 'flex', gap: 16 }}>
+                                {/* Year */}
+                                <div style={{ flex: 1 }}>
+                                    <label style={{ display: 'block', marginBottom: 8, fontSize: 13, fontWeight: 500, color: '#cbd5e1' }}>Year</label>
+                                    <select 
+                                        value={year} 
+                                        onChange={(e) => setYear(e.target.value)} 
+                                        className="input-glass" 
+                                        style={{ appearance: 'none', width: '100%' }}
+                                        required
+                                    >
+                                        <option value="" disabled>Select Year</option>
+                                        <option value="1">1st Year</option>
+                                        <option value="2">2nd Year</option>
+                                        <option value="3">3rd Year</option>
+                                        <option value="4">4th Year</option>
+                                    </select>
+                                </div>
+
+                                {/* Exam */}
+                                <div style={{ flex: 1 }}>
+                                    <label style={{ display: 'block', marginBottom: 8, fontSize: 13, fontWeight: 500, color: '#cbd5e1' }}>Exam</label>
+                                    <select 
+                                        value={exam} 
+                                        onChange={(e) => setExam(e.target.value)} 
+                                        className="input-glass" 
+                                        style={{ appearance: 'none', width: '100%' }}
+                                        required
+                                    >
+                                        <option value="" disabled>Select Exam</option>
+                                        <option value="CLA 1">CLA 1</option>
+                                        <option value="CLA 2">CLA 2</option>
+                                        <option value="University Exam">University Exam</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
                             </div>
 
                             {/* Description */}
@@ -223,7 +231,7 @@ export default function UploadMaterialModal({ isOpen, onClose, onUploadSuccess }
                             {/* Actions */}
                             <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
                                 <button type="button" onClick={onClose} className="btn btn-secondary" style={{ flex: 1 }}>Cancel</button>
-                                <button type="submit" disabled={loading || !file || !title || !subjectId} className="btn btn-primary" style={{ flex: 1 }}>
+                                <button type="submit" disabled={loading || !file || !title || !year || !exam} className="btn btn-primary" style={{ flex: 1 }}>
                                     {loading ? 'Uploading...' : 'Submit for Review'}
                                 </button>
                             </div>
