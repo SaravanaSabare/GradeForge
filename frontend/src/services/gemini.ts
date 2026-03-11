@@ -42,7 +42,7 @@ Extract ALL subjects/courses visible in the image and return them as a JSON arra
 Each item must have:
 - "subject_name": Full name of the subject/course
 - "subject_code": Subject/course code (e.g. "CS1001", "MA2001"). If not visible, use ""
-- "credits": Number of credits (integer). If not visible, default to 3
+- "credits": Number of credits (integer). If the subject has 0 credits, keep it as 0. Only default to 3 if credits are not visible at all
 - "grade": Letter grade using this scale: O, A+, A, B+, B, C, F. Map any equivalent grades (e.g. S=O, E=F, AB=F, W=F)
 
 IMPORTANT: Return ONLY the JSON array, no markdown, no explanation, no code blocks. Example:
@@ -97,7 +97,7 @@ If you cannot identify any grades in the image, return an empty array: []`;
         return grades.map(g => ({
             subject_name: String(g.subject_name || '').trim(),
             subject_code: String(g.subject_code || '').trim(),
-            credits: Math.max(1, Math.min(10, Number(g.credits) || 3)),
+            credits: Math.max(0, Math.min(10, Number(g.credits) ?? 3)),
             grade: validateGrade(String(g.grade || 'A').trim()),
         })).filter(g => g.subject_name.length > 0);
     } catch {
