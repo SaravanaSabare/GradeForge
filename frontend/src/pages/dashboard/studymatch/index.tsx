@@ -52,7 +52,8 @@ export default function StudyMatch() {
         if (!user || !profile?.university_id) return;
         loadDiscoverUsers();
         loadMatches();
-    }, [user, profile]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user, profile?.university_id]);
 
     const loadDiscoverUsers = async () => {
         setLoading(true);

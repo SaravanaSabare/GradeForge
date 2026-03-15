@@ -51,6 +51,7 @@ export default function StudyMaterials() {
 
     useEffect(() => {
         fetchMaterials();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [profile?.university_id]);
 
     const filteredMaterials = materials.filter(m => {

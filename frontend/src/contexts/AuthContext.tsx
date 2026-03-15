@@ -5,6 +5,7 @@ import { supabase } from '../services/supabase';
 interface University {
     name: string;
     campuses?: string;
+    grading_system?: string;
 }
 
 interface Department {
@@ -109,4 +110,5 @@ export function useAuth() {
     return context;
 }
 
-export type { UserProfile };
+// Types are exported only for type imports (no runtime exports)
+export type { UserProfile, University, Department, AuthContextType };
