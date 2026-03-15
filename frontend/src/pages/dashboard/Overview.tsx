@@ -35,18 +35,19 @@ export default function DashboardOverview() {
                 let tc = 0, ep = 0;
                 const grouped: Record<number, typeof data> = {};
 
-                data.forEach((row: any) => {
+                data.forEach((row: Record<string, unknown>) => {
                     const cr = Number(row.credits) || 0;
                     const gp = Number(row.grade_points) || 0;
                     tc += cr;
                     ep += cr * gp;
-                    if (!grouped[row.semester]) grouped[row.semester] = [];
-                    grouped[row.semester].push(row);
+                    const sem = row.semester as number;
+                    if (!grouped[sem]) grouped[sem] = [];
+                    grouped[sem].push(row);
                 });
 
                 const semSummaries: SemesterSummary[] = Object.entries(grouped).map(([sem, rows]) => {
                     let semTc = 0, semEp = 0;
-                    rows.forEach((r: any) => {
+                    rows.forEach((r: Record<string, unknown>) => {
                         const cr = Number(r.credits) || 0;
                         semTc += cr;
                         semEp += cr * (Number(r.grade_points) || 0);

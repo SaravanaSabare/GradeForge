@@ -7,8 +7,8 @@ import { Shield, FileText, CheckCircle, XCircle, Users, AlertCircle } from 'luci
 export default function AdminDashboard() {
     const { profile } = useAuth();
     const [activeTab, setActiveTab] = useState<'materials' | 'users'>('materials');
-    const [materials, setMaterials] = useState<any[]>([]);
-    const [usersList, setUsersList] = useState<any[]>([]);
+    const [materials, setMaterials] = useState<Record<string, unknown>[]>([]);
+    const [usersList, setUsersList] = useState<Record<string, unknown>[]>([]);
     const [loading, setLoading] = useState(true);
 
     const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
@@ -50,7 +50,7 @@ export default function AdminDashboard() {
 
     useEffect(() => {
         fetchData();
-    }, [activeTab, profile?.university_id]);
+    }, [activeTab, profile?.university_id, fetchData]);
 
     const handleApprove = async (id: string) => {
         const { error } = await supabase.from('materials').update({ status: 'approved', rejection_reason: null }).eq('id', id);

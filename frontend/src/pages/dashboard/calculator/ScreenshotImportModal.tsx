@@ -16,7 +16,6 @@ type Stage = 'upload' | 'processing' | 'preview' | 'error';
 
 export default function ScreenshotImportModal({ open, onClose, onImport }: Props) {
     const [stage, setStage] = useState<Stage>('upload');
-    const [_file, setFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
     const [extracted, setExtracted] = useState<ExtractedGrade[]>([]);
     const [error, setError] = useState<string>('');
@@ -25,7 +24,6 @@ export default function ScreenshotImportModal({ open, onClose, onImport }: Props
 
     const reset = useCallback(() => {
         setStage('upload');
-        setFile(null);
         setPreview(null);
         setExtracted([]);
         setError('');
@@ -48,7 +46,6 @@ export default function ScreenshotImportModal({ open, onClose, onImport }: Props
             return;
         }
 
-        setFile(f);
         setPreview(URL.createObjectURL(f));
         setStage('processing');
 
@@ -61,8 +58,9 @@ export default function ScreenshotImportModal({ open, onClose, onImport }: Props
             }
             setExtracted(grades);
             setStage('preview');
-        } catch (err: any) {
-            setError(err.message || 'Something went wrong. Please try again.');
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
+            setError(errorMessage);
             setStage('error');
         }
     };

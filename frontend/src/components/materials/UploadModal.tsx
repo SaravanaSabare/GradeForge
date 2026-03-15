@@ -79,8 +79,9 @@ export default function UploadMaterialModal({ isOpen, onClose, onUploadSuccess }
                 setSuccess(false);
             }, 2000);
 
-        } catch (err: any) {
-            setError(err.message || 'Error uploading file');
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : 'Error uploading file';
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
