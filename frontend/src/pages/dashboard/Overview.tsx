@@ -89,11 +89,11 @@ export default function DashboardOverview() {
                     <div style={{ position: 'absolute', top: 0, right: 0, width: 300, height: 300, borderRadius: '50%', pointerEvents: 'none', background: '#7C5CFF', filter: 'blur(120px)', opacity: 0.12 }} />
                     <div style={{ position: 'relative', zIndex: 10 }}>
                         <h1 style={{ fontSize: 28, fontWeight: 700, letterSpacing: '-0.02em', marginBottom: 8 }}>
-                            Welcome back, {profile?.name?.split(' ')[0] || user?.user_metadata?.name?.split(' ')[0] || 'Scholar'}!
+                            Welcome back, {(profile as any)?.name?.split(' ')[0] || user?.user_metadata?.name?.split(' ')[0] || 'Scholar'}!
                         </h1>
                         <p style={{ color: '#94a3b8', marginBottom: 24, maxWidth: 600, fontSize: 14, lineHeight: 1.7 }}>
-                            {profile?.departments?.name
-                                ? <>Year {profile.year} • {profile.departments.name} • {profile.universities?.name}</>
+                            {(profile as any)?.departments?.name
+                                ? <>Year {(profile as any)?.year} • {(profile as any)?.departments?.name} • {(profile as any)?.universities?.name}</>
                                 : 'Setup your academic profile to get started.'}
                         </p>
                         <div style={{ display: 'flex', gap: 12 }}>
@@ -189,9 +189,9 @@ export default function DashboardOverview() {
                             <h3 style={{ fontSize: 13, fontWeight: 600, marginBottom: 16 }}>Your Profile</h3>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                                 {[
-                                    { label: 'University', value: profile?.universities?.name },
-                                    { label: 'Department', value: profile?.departments?.name },
-                                    { label: 'Year', value: profile?.year ? `Year ${profile.year}` : null },
+                                    { label: 'University', value: (profile as any)?.universities?.name },
+                                    { label: 'Department', value: (profile as any)?.departments?.name },
+                                    { label: 'Year', value: (profile as any)?.year ? `Year ${(profile as any)?.year}` : null },
                                     { label: 'Email', value: user?.email },
                                 ].map(({ label, value }) => (
                                     <div key={label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>

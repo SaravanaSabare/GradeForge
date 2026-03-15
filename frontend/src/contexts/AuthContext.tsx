@@ -2,10 +2,32 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../services/supabase';
 
+interface University {
+    name: string;
+    campuses?: string;
+}
+
+interface Department {
+    name: string;
+}
+
+interface UserProfile {
+    id: string;
+    name: string;
+    roll_number: string;
+    email: string;
+    role: 'student' | 'moderator' | 'admin';
+    university_id: string;
+    year?: number;
+    created_at: string;
+    universities?: University;
+    departments?: Department;
+}
+
 interface AuthContextType {
     session: Session | null;
     user: User | null;
-    profile: Record<string, unknown> | null; // Database public.users profile (includes roll_number, role)
+    profile: UserProfile | null;
     loading: boolean;
     signOut: () => Promise<void>;
 }
@@ -15,7 +37,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [session, setSession] = useState<Session | null>(null);
     const [user, setUser] = useState<User | null>(null);
-    const [profile, setProfile] = useState<Record<string, unknown> | null>(null);
+    const [profile, setProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -55,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 .single();
 
             if (!error && data) {
-                setProfile(data);
+                setProfile(data as UserProfile);
             }
         } catch (err) {
             console.error("Error fetching user profile:", err);
@@ -86,3 +108,5 @@ export function useAuth() {
     }
     return context;
 }
+
+export type { UserProfile };

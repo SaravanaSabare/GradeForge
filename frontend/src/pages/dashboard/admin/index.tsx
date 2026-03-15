@@ -4,11 +4,38 @@ import { useAuth } from '../../../contexts/AuthContext';
 import { supabase } from '../../../services/supabase';
 import { Shield, FileText, CheckCircle, XCircle, Users, AlertCircle } from 'lucide-react';
 
+interface Material {
+    id: string;
+    title: string;
+    description: string;
+    file_type: string;
+    file_url: string;
+    created_at: string;
+    status: string;
+    rejection_reason: string | null;
+    year: number;
+    exam: string;
+    uploader: Array<{
+        university_id: string;
+        name: string;
+        roll_number: string;
+    }>;
+}
+
+interface UserRow {
+    id: string;
+    name: string;
+    email: string;
+    roll_number: string;
+    role: 'student' | 'moderator' | 'admin';
+    created_at: string;
+}
+
 export default function AdminDashboard() {
     const { profile } = useAuth();
     const [activeTab, setActiveTab] = useState<'materials' | 'users'>('materials');
-    const [materials, setMaterials] = useState<Record<string, unknown>[]>([]);
-    const [usersList, setUsersList] = useState<Record<string, unknown>[]>([]);
+    const [materials, setMaterials] = useState<Material[]>([]);
+    const [usersList, setUsersList] = useState<UserRow[]>([]);
     const [loading, setLoading] = useState(true);
 
     const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
@@ -31,7 +58,7 @@ export default function AdminDashboard() {
                     .eq('status', 'pending')
                     .order('created_at', { ascending: false });
                 
-                if (!error && data) setMaterials(data);
+                if (!error && data) setMaterials(data as Material[]);
             } else if (activeTab === 'users' && profile.role === 'admin') {
                 const { data, error } = await supabase
                     .from('users')
@@ -39,7 +66,7 @@ export default function AdminDashboard() {
                     .eq('university_id', profile.university_id)
                     .order('created_at', { ascending: false });
                 
-                if (!error && data) setUsersList(data);
+                if (!error && data) setUsersList(data as UserRow[]);
             }
         } catch (err) {
             console.error(err);
@@ -50,7 +77,7 @@ export default function AdminDashboard() {
 
     useEffect(() => {
         fetchData();
-    }, [activeTab, profile?.university_id, fetchData]);
+    }, [activeTab, profile?.university_id]);
 
     const handleApprove = async (id: string) => {
         const { error } = await supabase.from('materials').update({ status: 'approved', rejection_reason: null }).eq('id', id);
@@ -99,7 +126,7 @@ export default function AdminDashboard() {
                         <h1 style={{ fontSize: 24, fontWeight: 700, letterSpacing: '-0.02em', display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
                             <Shield size={22} style={{ color: '#FF4D9D' }} /> Moderation Panel
                         </h1>
-                        <p style={{ fontSize: 13, color: '#94a3b8' }}>Review uploaded materials to ensure quality for {profile.universities?.name}.</p>
+                        <p style={{ fontSize: 13, color: '#94a3b8' }}>Review uploaded materials to ensure quality for {(profile as any)?.universities?.name}.</p>
                     </div>
                 </div>
 
@@ -130,7 +157,7 @@ export default function AdminDashboard() {
                                     </div>
                                     <div style={{ flex: 1 }}>
                                         <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 4 }}>{m.title}</h3>
-                                        <p style={{ fontSize: 13, color: '#94a3b8', marginBottom: 8 }}>{m.year} Year • {m.exam} • Uploaded by {m.uploader.name} ({m.uploader.roll_number})</p>
+                                        <p style={{ fontSize: 13, color: '#94a3b8', marginBottom: 8 }}>{m.year} Year • {m.exam} • Uploaded by {m.uploader[0]?.name} ({m.uploader[0]?.roll_number})</p>
                                         <a href={m.file_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: '#7C5CFF', fontWeight: 500, textDecoration: 'underline' }}>View File</a>
                                     </div>
                                     <div style={{ display: 'flex', gap: 12 }}>
@@ -177,7 +204,7 @@ export default function AdminDashboard() {
                                                 onChange={(e) => handleRoleChange(usr.id, e.target.value)}
                                                 className="input-glass" 
                                                 style={{ padding: '6px 12px', width: 'auto', minWidth: 120, fontSize: 12 }}
-                                                disabled={usr.id === profile.id} // Prevent changing own role
+                                                disabled={usr.id === (profile as any)?.id}
                                             >
                                                 <option value="student">Student</option>
                                                 <option value="moderator">Moderator</option>
