@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext';
 import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 import { supabase } from '../../../services/supabase';
-import { TrendingUp, BarChart3, Activity, Target, Award, Zap, AlertCircle } from 'lucide-react';
+import { getStudyRecommendations } from '../../../services/gemini';
+import { TrendingUp, BarChart3, Activity, Target, Award, Zap, AlertCircle, Lightbulb } from 'lucide-react';
 import { Line, Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -55,6 +56,8 @@ export default function Analytics() {
     const [avgGpa, setAvgGpa] = useState(0);
     const [improvement, setImprovement] = useState(0);
     const [gpaProjection, setGpaProjection] = useState(0);
+    const [recommendations, setRecommendations] = useState<string>('');
+    const [recommendationsLoading, setRecommendationsLoading] = useState(false);
 
     useEffect(() => {
         if (!user) {
@@ -157,6 +160,32 @@ export default function Analytics() {
             setLoading(false);
         }
     };
+
+    // Fetch AI recommendations when data is loaded
+    useEffect(() => {
+        if (semesters.length === 0 || loading) return;
+
+        const fetchRecommendations = async () => {
+            setRecommendationsLoading(true);
+            try {
+                // Find weak subjects (below average GPA)
+                const weakSubjects = subjects
+                    .filter((s) => s.grade_points < avgGpa * 0.8) // Below 80% of average
+                    .map((s) => ({ name: s.subject_name, gpa: s.grade_points }))
+                    .slice(0, 5); // Top 5 weakest
+
+                const recs = await getStudyRecommendations(weakSubjects, avgGpa, semesters.length);
+                setRecommendations(recs);
+            } catch (err) {
+                console.error('Error fetching recommendations:', err);
+                setRecommendations('Could not load personalized recommendations at this time.');
+            } finally {
+                setRecommendationsLoading(false);
+            }
+        };
+
+        fetchRecommendations();
+    }, [semesters, subjects, avgGpa, loading]);
 
     // Chart data
     const gpaTrendData = {
@@ -337,6 +366,33 @@ export default function Analytics() {
                         </div>
                     </div>
                 )}
+
+                {/* AI Study Recommendations */}
+                <div className="glass-panel" style={{ padding: 24, background: 'linear-gradient(135deg, rgba(124,92,255,0.1) 0%, rgba(0,229,255,0.05) 100%)' }}>
+                    <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <Lightbulb size={18} style={{ color: '#FBBC05' }} /> AI Study Recommendations
+                    </h3>
+                    {recommendationsLoading ? (
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 120, color: '#64748b' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <div
+                                    style={{
+                                        width: 8,
+                                        height: 8,
+                                        borderRadius: '50%',
+                                        background: '#7C5CFF',
+                                        animation: 'pulse 1.5s ease-in-out infinite',
+                                    }}
+                                />
+                                Generating personalized recommendations...
+                            </div>
+                        </div>
+                    ) : (
+                        <p style={{ fontSize: 13, color: '#cbd5e1', lineHeight: 1.7 }}>
+                            {recommendations}
+                        </p>
+                    )}
+                </div>
 
                 {/* Insights */}
                 <div className="glass-panel" style={{ padding: 24 }}>

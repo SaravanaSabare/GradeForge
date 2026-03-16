@@ -117,3 +117,59 @@ function validateGrade(grade: string): string {
     if (upper.startsWith('B')) return 'B';
     return 'A';
 }
+
+/**
+ * Gets AI-powered study recommendations based on weak subjects
+ */
+export async function getStudyRecommendations(
+    weakSubjects: { name: string; gpa: number }[],
+    averageGpa: number,
+    semesterCount: number
+): Promise<string> {
+    if (!GROQ_API_KEY) {
+        throw new Error('Groq API key is not configured.');
+    }
+
+    if (weakSubjects.length === 0) {
+        return "You're performing consistently well across all subjects! Keep maintaining your high standards and continue exploring advanced topics in your areas of interest.";
+    }
+
+    const subjectList = weakSubjects.map(s => `${s.name} (GPA: ${s.gpa.toFixed(2)})`).join(', ');
+
+    const prompt = `You are an expert academic advisor. A student has the following weak subjects: ${subjectList}
+
+Their overall average GPA is ${averageGpa.toFixed(2)} and they've completed ${semesterCount} semester(s).
+
+Provide BRIEF, actionable study recommendations:
+1. Identify the common reasons why these subjects might be challenging
+2. Suggest 2-3 specific study strategies tailored to these subjects
+3. Recommend time management approach for next semester
+4. Suggest one resource type (book, video, practice problems, etc.) that would help most
+
+Keep the response concise (max 150 words), practical, and encouraging. Format as a few short paragraphs.`;
+
+    const response = await fetch(GROQ_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${GROQ_API_KEY}`,
+        },
+        body: JSON.stringify({
+            model: 'meta-llama/llama-4-scout-17b-16e-instruct',
+            messages: [{
+                role: 'user',
+                content: prompt,
+            }],
+            temperature: 0.7,
+            max_tokens: 512,
+        }),
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to get AI recommendations from Groq');
+    }
+
+    const data = await response.json();
+    const recommendation = data?.choices?.[0]?.message?.content || 'Unable to generate recommendations at this time.';
+    return recommendation.trim();
+}
