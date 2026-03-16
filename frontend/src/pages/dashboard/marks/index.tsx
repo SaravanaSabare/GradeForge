@@ -146,8 +146,8 @@ export default function MarkCalculator() {
     if (loading) {
         return (
             <DashboardLayout>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-                    <Loader2 style={{ width: 32, height: 32, animation: 'spin 1s linear infinite', color: '#3b82f6' }} />
+                <div className="flex items-center justify-center h-screen">
+                    <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
                 </div>
             </DashboardLayout>
         );
@@ -155,59 +155,59 @@ export default function MarkCalculator() {
 
     return (
         <DashboardLayout>
-            <div style={{ minHeight: '100vh', background: '#0f172a', padding: '1rem 2rem' }}>
-                <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+            <div className="min-h-screen bg-slate-900 p-4 sm:p-8">
+                <div className="max-w-7xl mx-auto">
                     {/* Header */}
-                    <div style={{ marginBottom: '3rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+                    <div className="mb-12">
+                        <div className="flex items-start justify-between mb-6">
                             <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-                                    <div style={{ padding: '0.75rem', background: 'linear-gradient(to bottom right, #f59e0b, #ea580c)', borderRadius: '0.75rem' }}>
-                                        <Award style={{ width: 24, height: 24, color: 'white' }} />
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div className="p-3 bg-linear-to-br from-amber-500 to-orange-600 rounded-xl">
+                                        <Award className="w-6 h-6 text-white" />
                                     </div>
-                                    <h1 style={{ fontSize: '2.25rem', fontWeight: 900, color: 'white', margin: 0 }}>Mark Calculator</h1>
+                                    <h1 className="text-4xl font-black text-white">Mark Calculator</h1>
                                 </div>
-                                <p style={{ color: '#9ca3af', fontSize: '1.125rem', margin: 0 }}>Track and analyze your internal marks with weighted grading</p>
+                                <p className="text-gray-400 text-lg">Track and analyze your internal marks with weighted grading</p>
                             </div>
                         </div>
                     </div>
 
                     {/* Stats Grid */}
                     {allSubjects.length > 0 && (
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-                            <div style={{ position: 'relative', background: '#1e293b', borderRadius: '1.5rem', padding: '1.5rem', border: '1px solid rgba(71, 85, 105, 0.5)', cursor: 'pointer', transition: 'all 0.3s ease' }} onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.5)'} onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(71, 85, 105, 0.5)'}>
-                                <div style={{ position: 'absolute', inset: 0, background: 'rgba(59, 130, 246, 0.1)', borderRadius: '1.5rem', opacity: 0, transition: 'opacity 0.3s ease' }} />
-                                <div style={{ position: 'relative' }}>
-                                    <p style={{ color: '#9ca3af', fontSize: '0.875rem', fontWeight: 500, margin: 0, marginBottom: '0.25rem' }}>Total Subjects</p>
-                                    <p style={{ fontSize: '2rem', fontWeight: 900, color: '#60a5fa', margin: 0 }}>{allSubjects.length}</p>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                            <div className="group relative bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition">
+                                <div className="absolute inset-0 bg-linear-to-br from-blue-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition" />
+                                <div className="relative">
+                                    <p className="text-gray-400 text-sm font-medium mb-1">Total Subjects</p>
+                                    <p className="text-4xl font-black text-blue-400">{allSubjects.length}</p>
                                 </div>
                             </div>
 
-                            <div style={{ position: 'relative', background: '#1e293b', borderRadius: '1.5rem', padding: '1.5rem', border: '1px solid rgba(71, 85, 105, 0.5)', cursor: 'pointer', transition: 'all 0.3s ease' }} onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.5)'} onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(71, 85, 105, 0.5)'}>
-                                <div style={{ position: 'absolute', inset: 0, background: 'rgba(168, 85, 247, 0.1)', borderRadius: '1.5rem', opacity: 0, transition: 'opacity 0.3s ease' }} />
-                                <div style={{ position: 'relative' }}>
-                                    <p style={{ color: '#9ca3af', fontSize: '0.875rem', fontWeight: 500, margin: 0, marginBottom: '0.25rem' }}>Average %</p>
-                                    <p style={{ fontSize: '2rem', fontWeight: 900, color: '#c084fc', margin: 0 }}>
+                            <div className="group relative bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition">
+                                <div className="absolute inset-0 bg-linear-to-br from-purple-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition" />
+                                <div className="relative">
+                                    <p className="text-gray-400 text-sm font-medium mb-1">Average %</p>
+                                    <p className="text-4xl font-black text-purple-400">
                                         {(allSubjects.reduce((sum, s) => sum + s.percentage, 0) / allSubjects.length).toFixed(1)}%
                                     </p>
                                 </div>
                             </div>
 
-                            <div style={{ position: 'relative', background: '#1e293b', borderRadius: '1.5rem', padding: '1.5rem', border: '1px solid rgba(71, 85, 105, 0.5)', cursor: 'pointer', transition: 'all 0.3s ease' }} onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(74, 222, 128, 0.5)'} onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(71, 85, 105, 0.5)'}>
-                                <div style={{ position: 'absolute', inset: 0, background: 'rgba(74, 222, 128, 0.1)', borderRadius: '1.5rem', opacity: 0, transition: 'opacity 0.3s ease' }} />
-                                <div style={{ position: 'relative' }}>
-                                    <p style={{ color: '#9ca3af', fontSize: '0.875rem', fontWeight: 500, margin: 0, marginBottom: '0.25rem' }}>Highest</p>
-                                    <p style={{ fontSize: '2rem', fontWeight: 900, color: '#4ade80', margin: 0 }}>
+                            <div className="group relative bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700/50 hover:border-green-500/50 transition">
+                                <div className="absolute inset-0 bg-linear-to-br from-green-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition" />
+                                <div className="relative">
+                                    <p className="text-gray-400 text-sm font-medium mb-1">Highest</p>
+                                    <p className="text-4xl font-black text-green-400">
                                         {Math.max(...allSubjects.map(s => s.percentage)).toFixed(1)}%
                                     </p>
                                 </div>
                             </div>
 
-                            <div style={{ position: 'relative', background: '#1e293b', borderRadius: '1.5rem', padding: '1.5rem', border: '1px solid rgba(71, 85, 105, 0.5)', cursor: 'pointer', transition: 'all 0.3s ease' }} onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(248, 113, 113, 0.5)'} onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(71, 85, 105, 0.5)'}>
-                                <div style={{ position: 'absolute', inset: 0, background: 'rgba(248, 113, 113, 0.1)', borderRadius: '1.5rem', opacity: 0, transition: 'opacity 0.3s ease' }} />
-                                <div style={{ position: 'relative' }}>
-                                    <p style={{ color: '#9ca3af', fontSize: '0.875rem', fontWeight: 500, margin: 0, marginBottom: '0.25rem' }}>Lowest</p>
-                                    <p style={{ fontSize: '2rem', fontWeight: 900, color: '#f87171', margin: 0 }}>
+                            <div className="group relative bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700/50 hover:border-red-500/50 transition">
+                                <div className="absolute inset-0 bg-linear-to-br from-red-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition" />
+                                <div className="relative">
+                                    <p className="text-gray-400 text-sm font-medium mb-1">Lowest</p>
+                                    <p className="text-4xl font-black text-red-400">
                                         {Math.min(...allSubjects.map(s => s.percentage)).toFixed(1)}%
                                     </p>
                                 </div>
@@ -216,9 +216,9 @@ export default function MarkCalculator() {
                     )}
 
                     {/* Subject Panel */}
-                    <div style={{ display: 'grid', gridTemplateColumns: selectedSubject ? '1fr 1fr' : '1fr', gap: '1.5rem', marginBottom: '2rem' }}>
-                        <div style={{ background: '#1e293b', border: '1px solid rgba(71, 85, 105, 0.5)', borderRadius: '1.5rem', padding: '1.5rem' }}>
-                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 700, color: 'white', margin: 0, marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Select Subject</label>
+                    <div className={`grid ${selectedSubject ? 'grid-cols-1 lg:grid-cols-3' : 'grid-cols-1'} gap-6 mb-8`}>
+                        <div className="lg:col-span-2 bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700/50">
+                            <label className="block text-sm font-bold text-white mb-3 uppercase tracking-wider">Select Subject</label>
                             <input
                                 type="text"
                                 placeholder="Type subject name..."
@@ -227,18 +227,7 @@ export default function MarkCalculator() {
                                     setSelectedSubject(e.target.value);
                                     setNewComponent({ component_type: 'Quiz', max_marks: 10, weight: 10, obtained_marks: '' });
                                 }}
-                                style={{
-                                    width: '100%',
-                                    background: 'rgba(15, 23, 42, 0.5)',
-                                    border: '1px solid #475569',
-                                    borderRadius: '0.75rem',
-                                    padding: '0.75rem 1rem',
-                                    color: 'white',
-                                    fontSize: '1rem',
-                                    fontWeight: 500,
-                                    outline: 'none',
-                                    boxSizing: 'border-box',
-                                }}
+                                className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg font-medium"
                                 list="subjects"
                             />
                             <datalist id="subjects">
@@ -249,8 +238,8 @@ export default function MarkCalculator() {
                         </div>
 
                         {selectedSubject && (
-                            <div style={{ background: '#1e293b', border: '1px solid rgba(71, 85, 105, 0.5)', borderRadius: '1.5rem', padding: '1.5rem' }}>
-                                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 700, color: 'white', margin: 0, marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Target %</label>
+                            <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700/50">
+                                <label className="block text-sm font-bold text-white mb-3 uppercase tracking-wider">Target %</label>
                                 <input
                                     type="number"
                                     min="0"
@@ -260,66 +249,31 @@ export default function MarkCalculator() {
                                     onChange={(e) =>
                                         setTargetMarks({ ...targetMarks, [selectedSubject]: Number(e.target.value) })
                                     }
-                                    style={{
-                                        width: '100%',
-                                        background: 'rgba(15, 23, 42, 0.5)',
-                                        border: '1px solid #475569',
-                                        borderRadius: '0.75rem',
-                                        padding: '0.75rem 1rem',
-                                        color: 'white',
-                                        fontSize: '1rem',
-                                        fontWeight: 500,
-                                        outline: 'none',
-                                        boxSizing: 'border-box',
-                                    }}
+                                    className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 text-lg font-medium"
                                 />
                             </div>
                         )}
                     </div>
 
                     {/* Add Component Button */}
-                    <div style={{ marginBottom: '2rem' }}>
+                    <div className="mb-8">
                         <button
                             onClick={() => setShowAddComponent(!showAddComponent)}
-                            style={{
-                                width: '100%',
-                                background: 'linear-gradient(to right, #2563eb, #1d4ed8)',
-                                color: 'white',
-                                fontWeight: 700,
-                                padding: '1rem 1.5rem',
-                                borderRadius: '1.5rem',
-                                border: 'none',
-                                cursor: 'pointer',
-                                fontSize: '1.125rem',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: '0.75rem',
-                                boxShadow: '0 4px 6px rgba(37, 99, 235, 0.2)',
-                                transition: 'all 0.3s ease',
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.background = 'linear-gradient(to right, #1d4ed8, #1e40af)';
-                                e.currentTarget.style.boxShadow = '0 8px 12px rgba(37, 99, 235, 0.3)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.background = 'linear-gradient(to right, #2563eb, #1d4ed8)';
-                                e.currentTarget.style.boxShadow = '0 4px 6px rgba(37, 99, 235, 0.2)';
-                            }}
+                            className="group w-full bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold px-6 py-4 rounded-2xl transition shadow-lg hover:shadow-blue-500/20 flex items-center justify-center gap-3 text-lg"
                         >
-                            <Plus style={{ width: 24, height: 24 }} />
+                            <Plus className="w-6 h-6 group-hover:scale-110 transition" />
                             Add Component
                         </button>
                     </div>
 
                     {/* Add Component Form */}
                     {showAddComponent && (
-                        <div style={{ background: '#1e293b', border: '1px solid rgba(71, 85, 105, 0.5)', borderRadius: '1.5rem', padding: '2rem', marginBottom: '2rem' }}>
-                            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'white', margin: 0, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                <Sparkles style={{ width: 20, height: 20, color: '#fbbf24' }} />
+                        <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-8 border border-slate-700/50 mb-8">
+                            <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                                <Sparkles className="w-5 h-5 text-amber-400" />
                                 New Component
                             </h3>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: '1rem' }}>
+                            <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
                                 <input
                                     type="text"
                                     placeholder="Type"
@@ -327,16 +281,7 @@ export default function MarkCalculator() {
                                     onChange={(e) =>
                                         setNewComponent({ ...newComponent, component_type: e.target.value })
                                     }
-                                    style={{
-                                        background: 'rgba(15, 23, 42, 0.5)',
-                                        border: '1px solid #475569',
-                                        borderRadius: '0.75rem',
-                                        padding: '0.75rem',
-                                        color: 'white',
-                                        fontSize: '1rem',
-                                        fontWeight: 500,
-                                        boxSizing: 'border-box',
-                                    }}
+                                    className="bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
                                 />
 
                                 <input
@@ -346,16 +291,7 @@ export default function MarkCalculator() {
                                     onChange={(e) =>
                                         setNewComponent({ ...newComponent, max_marks: Number(e.target.value) })
                                     }
-                                    style={{
-                                        background: 'rgba(15, 23, 42, 0.5)',
-                                        border: '1px solid #475569',
-                                        borderRadius: '0.75rem',
-                                        padding: '0.75rem',
-                                        color: 'white',
-                                        fontSize: '1rem',
-                                        fontWeight: 500,
-                                        boxSizing: 'border-box',
-                                    }}
+                                    className="bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
                                 />
 
                                 <input
@@ -365,16 +301,7 @@ export default function MarkCalculator() {
                                     onChange={(e) =>
                                         setNewComponent({ ...newComponent, weight: Number(e.target.value) })
                                     }
-                                    style={{
-                                        background: 'rgba(15, 23, 42, 0.5)',
-                                        border: '1px solid #475569',
-                                        borderRadius: '0.75rem',
-                                        padding: '0.75rem',
-                                        color: 'white',
-                                        fontSize: '1rem',
-                                        fontWeight: 500,
-                                        boxSizing: 'border-box',
-                                    }}
+                                    className="bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
                                 />
 
                                 <input
@@ -384,224 +311,140 @@ export default function MarkCalculator() {
                                     onChange={(e) =>
                                         setNewComponent({ ...newComponent, obtained_marks: e.target.value })
                                     }
-                                    style={{
-                                        background: 'rgba(15, 23, 42, 0.5)',
-                                        border: '1px solid #475569',
-                                        borderRadius: '0.75rem',
-                                        padding: '0.75rem',
-                                        color: 'white',
-                                        fontSize: '1rem',
-                                        fontWeight: 500,
-                                        boxSizing: 'border-box',
-                                    }}
+                                    className="bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
                                 />
 
                                 <button
                                     onClick={handleAddComponent}
                                     disabled={saving}
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: '0.5rem',
-                                        background: '#16a34a',
-                                        color: 'white',
-                                        fontWeight: 700,
-                                        padding: '0.75rem',
-                                        borderRadius: '0.75rem',
-                                        border: 'none',
-                                        cursor: saving ? 'not-allowed' : 'pointer',
-                                        opacity: saving ? 0.6 : 1,
-                                        transition: 'all 0.3s ease',
-                                    }}
-                                    onMouseEnter={(e) => !saving && (e.currentTarget.style.background = '#15803d')}
-                                    onMouseLeave={(e) => !saving && (e.currentTarget.style.background = '#16a34a')}
+                                    className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white font-bold px-6 py-3 rounded-xl transition shadow-lg hover:shadow-green-500/20"
                                 >
-                                    {saving ? <Loader2 style={{ width: 20, height: 20, animation: 'spin 1s linear infinite' }} /> : <Save style={{ width: 20, height: 20 }} />}
+                                    {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
                                 </button>
                             </div>
                         </div>
                     )}
 
                     {/* Subjects */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div className="space-y-4">
                         {allSubjects.length === 0 ? (
-                            <div style={{ background: '#1e293b', border: '1px solid rgba(71, 85, 105, 0.5)', borderRadius: '1.5rem', padding: '3rem', textAlign: 'center' }}>
-                                <AlertCircle style={{ width: 64, height: 64, color: '#64748b', margin: '0 auto 1rem', display: 'block' }} />
-                                <p style={{ color: '#9ca3af', fontSize: '1.125rem', margin: 0 }}>No subjects yet. Add a component to get started!</p>
+                            <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl border border-slate-700/50 p-12 text-center">
+                                <AlertCircle className="w-16 h-16 text-slate-600 mx-auto mb-4" />
+                                <p className="text-gray-400 text-lg">No subjects yet. Add a component to get started!</p>
                             </div>
                         ) : (
                             allSubjects.map(subject => (
                                 <div
                                     key={subject.subject_name}
-                                    style={{ background: '#1e293b', border: '1px solid rgba(71, 85, 105, 0.5)', borderRadius: '1.5rem', overflow: 'hidden', transition: 'all 0.3s ease' }}
-                                    onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(71, 85, 105, 0.8)'}
-                                    onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(71, 85, 105, 0.5)'}
+                                    className="group bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl border border-slate-700/50 overflow-hidden hover:border-slate-600 transition"
                                 >
+                                    {/* Subject Header */}
                                     <div
                                         onClick={() =>
                                             setExpandedSubject(expandedSubject === subject.subject_name ? null : subject.subject_name)
                                         }
-                                        style={{
-                                            padding: '1.5rem',
-                                            cursor: 'pointer',
-                                            background: '#1e293b',
-                                            transition: 'background 0.2s ease',
-                                        }}
-                                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(30, 41, 59, 0.8)'}
-                                        onMouseLeave={(e) => e.currentTarget.style.background = '#1e293b'}
+                                        className="p-6 cursor-pointer hover:bg-slate-700/30 transition"
                                     >
-                                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-                                            <div style={{ flex: 1, minWidth: 0 }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
-                                                    <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: 'white', margin: 0 }}>{subject.subject_name}</h3>
-                                                    <span style={{
-                                                        padding: '0.25rem 1rem',
-                                                        borderRadius: '9999px',
-                                                        fontSize: '0.875rem',
-                                                        fontWeight: 700,
-                                                        background: subject.grade === 'O' ? 'rgba(234, 88, 12, 0.2)' :
-                                                            subject.grade === 'A+' ? 'rgba(220, 38, 38, 0.2)' :
-                                                            subject.grade === 'A' ? 'rgba(168, 85, 247, 0.2)' :
-                                                            subject.grade === 'B+' ? 'rgba(59, 130, 246, 0.2)' :
-                                                            'rgba(100, 116, 139, 0.2)',
-                                                        color: subject.grade === 'O' ? '#ea580c' :
-                                                            subject.grade === 'A+' ? '#dc2626' :
-                                                            subject.grade === 'A' ? '#a855f7' :
-                                                            subject.grade === 'B+' ? '#3b82f6' :
-                                                            '#64748b',
-                                                    }}>
+                                        <div className="flex items-center justify-between gap-4 mb-4">
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center gap-3 mb-3 flex-wrap">
+                                                    <h3 className="text-2xl font-black text-white truncate">{subject.subject_name}</h3>
+                                                    <span className={`px-4 py-1 rounded-full text-sm font-bold ${
+                                                        subject.grade === 'O' ? 'bg-orange-500/20 text-orange-300' :
+                                                        subject.grade === 'A+' ? 'bg-red-500/20 text-red-300' :
+                                                        subject.grade === 'A' ? 'bg-purple-500/20 text-purple-300' :
+                                                        subject.grade === 'B+' ? 'bg-blue-500/20 text-blue-300' :
+                                                        'bg-gray-500/20 text-gray-300'
+                                                    }`}>
                                                         {subject.grade}
                                                     </span>
                                                 </div>
-                                                <div style={{ display: 'flex', gap: '1rem', fontSize: '0.875rem', color: '#9ca3af', flexWrap: 'wrap' }}>
-                                                    <span style={{ fontWeight: 600 }}>Marks: <span style={{ color: 'white' }}>{subject.total_obtained.toFixed(1)}/{subject.total_max}</span></span>
-                                                    <span style={{ fontWeight: 600 }}>Score: <span style={{ color: 'white' }}>{subject.percentage.toFixed(1)}%</span></span>
+                                                <div className="flex flex-wrap gap-4 text-sm text-gray-400">
+                                                    <span className="font-semibold">Marks: <span className="text-white">{subject.total_obtained.toFixed(1)}/{subject.total_max}</span></span>
+                                                    <span className="font-semibold">Score: <span className="text-white">{subject.percentage.toFixed(1)}%</span></span>
                                                 </div>
                                             </div>
 
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexShrink: 0 }}>
+                                            <div className="flex items-center gap-4">
                                                 {targetMarks[subject.subject_name] && (
-                                                    <div style={{ textAlign: 'right', background: 'rgba(15, 23, 42, 0.5)', borderRadius: '0.75rem', padding: '0.75rem 1rem', whiteSpace: 'nowrap' }}>
-                                                        <p style={{ fontSize: '0.75rem', color: '#9ca3af', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0, marginBottom: '0.25rem' }}>Target</p>
-                                                        <p style={{ fontSize: '1.5rem', fontWeight: 900, color: 'white', margin: 0 }}>{targetMarks[subject.subject_name]}%</p>
+                                                    <div className="text-right bg-slate-700/30 rounded-xl px-4 py-3 min-w-max">
+                                                        <p className="text-xs text-gray-400 uppercase font-bold tracking-wider">Target</p>
+                                                        <p className="text-xl font-black text-white">{targetMarks[subject.subject_name]}%</p>
                                                         {canAchieveTarget(subject) ? (
-                                                            <p style={{ fontSize: '0.75rem', color: '#4ade80', fontWeight: 700, marginTop: '0.25rem', margin: 0 }}>
-                                                                Need: {calculateRequiredMarks(subject)?.toFixed(1)}
+                                                            <p className="text-xs text-green-400 font-bold mt-1">
+                                                                Need: {calculateRequiredMarks(subject)?.toFixed(1)} more
                                                             </p>
                                                         ) : (
-                                                            <p style={{ fontSize: '0.75rem', color: '#f87171', fontWeight: 700, marginTop: '0.25rem', margin: 0 }}>Not achievable</p>
+                                                            <p className="text-xs text-red-400 font-bold mt-1">Not achievable</p>
                                                         )}
                                                     </div>
                                                 )}
                                                 {expandedSubject === subject.subject_name ? (
-                                                    <ChevronUp style={{ width: 24, height: 24, color: '#60a5fa', flexShrink: 0 }} />
+                                                    <ChevronUp className="w-6 h-6 text-blue-400 shrink-0" />
                                                 ) : (
-                                                    <ChevronDown style={{ width: 24, height: 24, color: '#9ca3af', flexShrink: 0 }} />
+                                                    <ChevronDown className="w-6 h-6 text-gray-500 shrink-0" />
                                                 )}
                                             </div>
                                         </div>
 
                                         {/* Progress Bar */}
-                                        <div style={{ height: '0.75rem', background: 'rgba(15, 23, 42, 0.5)', borderRadius: '9999px', overflow: 'hidden' }}>
+                                        <div className="h-3 bg-slate-700/50 rounded-full overflow-hidden">
                                             <div
-                                                style={{
-                                                    height: '100%',
-                                                    background: 'linear-gradient(to right, #3b82f6, #06b6d4)',
-                                                    width: `${Math.min(subject.percentage, 100)}%`,
-                                                    transition: 'width 0.5s ease',
-                                                }}
+                                                className="h-full bg-linear-to-r from-blue-500 to-cyan-400 transition-all duration-500"
+                                                style={{ width: `${Math.min(subject.percentage, 100)}%` }}
                                             />
                                         </div>
                                     </div>
 
                                     {/* Components List */}
                                     {expandedSubject === subject.subject_name && (
-                                        <div style={{ background: 'rgba(15, 23, 42, 0.5)', borderTop: '1px solid rgba(71, 85, 105, 0.5)', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                        <div className="bg-slate-900/50 border-t border-slate-700/50 p-6 space-y-3">
                                             {subject.components.map(component => (
                                                 <div
                                                     key={component.id}
-                                                    style={{
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        gap: '1rem',
-                                                        background: 'rgba(30, 41, 59, 0.5)',
-                                                        borderRadius: '0.75rem',
-                                                        padding: '1rem',
-                                                        border: '1px solid rgba(52, 65, 85, 0.5)',
-                                                        transition: 'all 0.2s ease',
-                                                    }}
-                                                    onMouseEnter={(e) => {
-                                                        e.currentTarget.style.borderColor = 'rgba(52, 65, 85, 1)';
-                                                        e.currentTarget.style.background = 'rgba(30, 41, 59, 0.8)';
-                                                    }}
-                                                    onMouseLeave={(e) => {
-                                                        e.currentTarget.style.borderColor = 'rgba(52, 65, 85, 0.5)';
-                                                        e.currentTarget.style.background = 'rgba(30, 41, 59, 0.5)';
-                                                    }}
+                                                    className="flex items-center gap-4 bg-slate-700/30 rounded-xl p-4 border border-slate-600/30 hover:border-slate-500 transition group"
                                                 >
-                                                    <div style={{ flex: 1, minWidth: 0 }}>
-                                                        <p style={{ fontWeight: 700, color: 'white', margin: 0, wordBreak: 'break-word' }}>{component.component_type}</p>
-                                                        <p style={{ fontSize: '0.75rem', color: '#9ca3af', fontWeight: 500, margin: 0 }}>
-                                                            Max: <span style={{ color: '#d1d5db' }}>{component.max_marks}</span> | Weight: <span style={{ color: '#d1d5db' }}>{component.weight}%</span>
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="font-bold text-white truncate">{component.component_type}</p>
+                                                        <p className="text-xs text-gray-400 font-medium">
+                                                            Max: <span className="text-gray-300">{component.max_marks}</span> | Weight: <span className="text-gray-300">{component.weight}%</span>
                                                         </p>
                                                     </div>
 
-                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                                                        <input
-                                                            type="number"
-                                                            min="0"
-                                                            max={component.max_marks}
-                                                            value={component.obtained_marks || ''}
-                                                            onChange={(e) =>
-                                                                handleUpdateMarks(component.id, Number(e.target.value))
-                                                            }
-                                                            placeholder="0"
-                                                            style={{
-                                                                width: '80px',
-                                                                background: 'rgba(15, 23, 42, 0.5)',
-                                                                border: '1px solid rgba(71, 85, 105, 0.5)',
-                                                                borderRadius: '0.5rem',
-                                                                padding: '0.5rem',
-                                                                color: 'white',
-                                                                fontSize: '0.875rem',
-                                                                textAlign: 'center',
-                                                                fontWeight: 700,
-                                                                boxSizing: 'border-box',
-                                                            }}
-                                                        />
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="flex items-center gap-2">
+                                                            <input
+                                                                type="number"
+                                                                min="0"
+                                                                max={component.max_marks}
+                                                                value={component.obtained_marks || ''}
+                                                                onChange={(e) =>
+                                                                    handleUpdateMarks(component.id, Number(e.target.value))
+                                                                }
+                                                                placeholder="0"
+                                                                className="w-20 bg-slate-600/50 border border-slate-500 rounded-lg px-3 py-2 text-white text-sm text-center font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                            />
 
-                                                        {component.obtained_marks !== null && (
-                                                            <span style={{ fontSize: '0.875rem', fontWeight: 900, color: '#60a5fa', minWidth: '48px', textAlign: 'right' }}>
-                                                                {((component.obtained_marks / component.max_marks) * 100).toFixed(0)}%
-                                                            </span>
-                                                        )}
+                                                            {component.obtained_marks !== null && (
+                                                                <span className="text-sm font-black text-blue-400 min-w-12 text-right">
+                                                                    {((component.obtained_marks / component.max_marks) * 100).toFixed(0)}%
+                                                                </span>
+                                                            )}
+                                                        </div>
 
                                                         <button
                                                             onClick={() => handleDeleteComponent(component.id)}
                                                             disabled={saving}
-                                                            style={{
-                                                                padding: '0.5rem',
-                                                                color: '#f87171',
-                                                                background: 'transparent',
-                                                                border: 'none',
-                                                                cursor: saving ? 'not-allowed' : 'pointer',
-                                                                display: 'flex',
-                                                                alignItems: 'center',
-                                                                transition: 'all 0.2s ease',
-                                                                opacity: saving ? 0.5 : 1,
-                                                            }}
-                                                            onMouseEnter={(e) => !saving && (e.currentTarget.style.color = '#dc2626')}
-                                                            onMouseLeave={(e) => !saving && (e.currentTarget.style.color = '#f87171')}
+                                                            className="p-2.5 text-red-400 hover:bg-red-500/20 rounded-lg transition disabled:opacity-50 hover:scale-110"
                                                         >
-                                                            <Trash2 style={{ width: 20, height: 20 }} />
+                                                            <Trash2 className="w-5 h-5" />
                                                         </button>
                                                     </div>
                                                 </div>
                                             ))}
 
                                             {subject.components.length === 0 && (
-                                                <p style={{ textAlign: 'center', color: '#64748b', paddingTop: '1.5rem', paddingBottom: '1.5rem', fontWeight: 500, margin: 0 }}>No components added</p>
+                                                <p className="text-center text-gray-500 py-6 font-medium">No components added</p>
                                             )}
                                         </div>
                                     )}
