@@ -4,7 +4,8 @@ import { useAuth } from '../../../contexts/AuthContext';
 import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 import { supabase } from '../../../services/supabase';
 import { getStudyRecommendations } from '../../../services/gemini';
-import { TrendingUp, BarChart3, Activity, Target, Award, Zap, AlertCircle, Lightbulb } from 'lucide-react';
+import { exportAnalyticsReport } from '../../../services/pdf';
+import { TrendingUp, BarChart3, Activity, Target, Award, Zap, AlertCircle, Lightbulb, Download, Loader } from 'lucide-react';
 import { Line, Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -46,7 +47,7 @@ interface SubjectAnalytics {
 }
 
 export default function Analytics() {
-    const { user } = useAuth();
+    const { user, profile } = useAuth();
     const [loading, setLoading] = useState(true);
     const [semesters, setSemesters] = useState<SemesterData[]>([]);
     const [subjects, setSubjects] = useState<SubjectAnalytics[]>([]);
@@ -58,6 +59,7 @@ export default function Analytics() {
     const [gpaProjection, setGpaProjection] = useState(0);
     const [recommendations, setRecommendations] = useState<string>('');
     const [recommendationsLoading, setRecommendationsLoading] = useState(false);
+    const [exportingPDF, setExportingPDF] = useState(false);
 
     useEffect(() => {
         if (!user) {
@@ -192,6 +194,33 @@ export default function Analytics() {
         fetchRecommendations();
     }, [semesters, subjects, avgGpa, loading]);
 
+    // Handle PDF export
+    const handleExportPDF = async () => {
+        setExportingPDF(true);
+        try {
+            await exportAnalyticsReport(
+                {
+                    cgpa,
+                    avgGpa,
+                    highestSem,
+                    lowestSem,
+                    improvement,
+                    gpaProjection,
+                    semesterCount: semesters.length,
+                    subjectCount: subjects.length,
+                    recommendations,
+                    semesters,
+                },
+                profile?.name || 'Student'
+            );
+        } catch (err) {
+            console.error('Error exporting PDF:', err);
+            alert('Failed to export PDF. Please try again.');
+        } finally {
+            setExportingPDF(false);
+        }
+    };
+
     // Chart data
     const gpaTrendData = {
         labels: semesters.map((s) => `Sem ${s.semester}`),
@@ -301,13 +330,55 @@ export default function Analytics() {
         <DashboardLayout>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 32, maxWidth: 1400, margin: '0 auto', padding: '20px' }}>
                 {/* Header */}
-                <div>
-                    <h1 style={{ fontSize: 28, fontWeight: 700, letterSpacing: '-0.02em', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
-                        <BarChart3 size={28} style={{ color: '#7C5CFF' }} /> Analytics Dashboard
-                    </h1>
-                    <p style={{ color: '#94a3b8', fontSize: 14 }}>
-                        Comprehensive analysis of your academic performance and trends
-                    </p>
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 20 }}>
+                    <div>
+                        <h1 style={{ fontSize: 28, fontWeight: 700, letterSpacing: '-0.02em', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
+                            <BarChart3 size={28} style={{ color: '#7C5CFF' }} /> Analytics Dashboard
+                        </h1>
+                        <p style={{ color: '#94a3b8', fontSize: 14 }}>
+                            Comprehensive analysis of your academic performance and trends
+                        </p>
+                    </div>
+                    <button
+                        onClick={handleExportPDF}
+                        disabled={exportingPDF || semesters.length === 0}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: 8,
+                            padding: '10px 16px',
+                            borderRadius: 8,
+                            border: 'none',
+                            background: exportingPDF ? 'rgba(124,92,255,0.5)' : 'linear-gradient(135deg, #7C5CFF 0%, #00E5FF 100%)',
+                            color: '#fff',
+                            fontSize: 13,
+                            fontWeight: 600,
+                            cursor: exportingPDF || semesters.length === 0 ? 'not-allowed' : 'pointer',
+                            transition: 'all 0.2s',
+                            whiteSpace: 'nowrap',
+                        }}
+                        onMouseEnter={(e) => {
+                            if (!exportingPDF && semesters.length > 0) {
+                                (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
+                                (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 16px rgba(124,92,255,0.3)';
+                            }
+                        }}
+                        onMouseLeave={(e) => {
+                            (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+                            (e.currentTarget as HTMLElement).style.boxShadow = 'none';
+                        }}
+                    >
+                        {exportingPDF ? (
+                            <>
+                                <Loader size={16} style={{ animation: 'spin 1s linear infinite' }} /> Generating...
+                            </>
+                        ) : (
+                            <>
+                                <Download size={16} /> Export PDF
+                            </>
+                        )}
+                    </button>
                 </div>
 
                 {/* Key Metrics */}
