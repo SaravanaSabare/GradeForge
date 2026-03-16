@@ -14,6 +14,7 @@ import AdminDashboard from './pages/dashboard/admin';
 import Analytics from './pages/dashboard/analytics';
 import Settings from './pages/dashboard/settings';
 import Notes from './pages/dashboard/notes';
+import MarkCalculator from './pages/dashboard/marks';
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const { session, profile, loading } = useAuth();
@@ -48,6 +49,7 @@ function App() {
       <Route path="/dashboard" element={<ProtectedRoute><DashboardOverview /></ProtectedRoute>} />
       <Route path="/dashboard/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
       <Route path="/dashboard/calculator" element={<ProtectedRoute><CGPACalculator /></ProtectedRoute>} />
+      <Route path="/dashboard/marks" element={<ProtectedRoute><MarkCalculator /></ProtectedRoute>} />
       <Route path="/dashboard/materials" element={<ProtectedRoute><StudyMaterials /></ProtectedRoute>} />
       <Route path="/dashboard/studymatch" element={<ProtectedRoute><StudyMatch /></ProtectedRoute>} />
       <Route path="/dashboard/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
