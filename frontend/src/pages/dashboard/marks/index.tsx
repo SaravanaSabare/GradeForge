@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 import {
     Calculator,
-    TrendingUp,
+    Zap,
 } from 'lucide-react';
 import {
     calculateGradeResult,
@@ -63,202 +63,205 @@ export default function MarkCalculator() {
 
     return (
         <DashboardLayout>
-            <div className="marks-container">
-                <div className="marks-wrapper">
-                    {/* Header */}
-                    <div className="marks-header">
-                        <div className="marks-title">
-                            <div className="marks-icon">
-                                <Calculator className="w-6 h-6 text-white" />
-                            </div>
+            <div className="calc-wrapper">
+                {/* Header */}
+                <div className="calc-header glass-panel">
+                    <div className="calc-title">
+                        <div className="calc-icon">
+                            <Calculator className="w-6 h-6" />
+                        </div>
+                        <div>
                             <h1>SRM Grade Calculator</h1>
-                        </div>
-                        <p className="marks-subtitle">Calculate your internal marks and predict final grade (60-40 system)</p>
-                    </div>
-
-                    {/* Validation Errors */}
-                    {validationErrors.length > 0 && (
-                        <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', borderRadius: '0.75rem', padding: '1rem', marginBottom: '1.5rem' }}>
-                            {validationErrors.map((error, idx) => (
-                                <p key={idx} style={{ color: '#fca5a5', fontSize: '0.875rem', margin: '0.25rem 0' }}>
-                                    • {error}
-                                </p>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Input Section */}
-                    <div className="form-group" style={{ marginBottom: '2rem' }}>
-                        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'white', marginBottom: '1.5rem', margin: 0 }}>Internal Marks (60)</h2>
-                        
-                        {/* Cycle Tests */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
-                            <div>
-                                <label className="form-label">Cycle Test 1 (out of 20)</label>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        max="20"
-                                        value={components.cycleTest1}
-                                        onChange={(e) => handleComponentChange('cycleTest1', parseFloat(e.target.value) || 0)}
-                                        className="form-input"
-                                        style={{ flex: 1 }}
-                                    />
-                                    <span style={{ color: '#9ca3af', minWidth: '60px', textAlign: 'right' }}>/ 20</span>
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="form-label">Cycle Test 2 (out of 20)</label>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        max="20"
-                                        value={components.cycleTest2}
-                                        onChange={(e) => handleComponentChange('cycleTest2', parseFloat(e.target.value) || 0)}
-                                        className="form-input"
-                                        style={{ flex: 1 }}
-                                    />
-                                    <span style={{ color: '#9ca3af', minWidth: '60px', textAlign: 'right' }}>/ 20</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Assignments & Attendance */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                            <div>
-                                <label className="form-label">Assignments / Quiz (out of 10)</label>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        max="10"
-                                        value={components.assignmentQuiz}
-                                        onChange={(e) => handleComponentChange('assignmentQuiz', parseFloat(e.target.value) || 0)}
-                                        className="form-input"
-                                        style={{ flex: 1 }}
-                                    />
-                                    <span style={{ color: '#9ca3af', minWidth: '60px', textAlign: 'right' }}>/ 10</span>
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="form-label">Attendance (out of 5)</label>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        max="5"
-                                        step="0.5"
-                                        value={components.attendance}
-                                        onChange={(e) => handleComponentChange('attendance', parseFloat(e.target.value) || 0)}
-                                        className="form-input"
-                                        style={{ flex: 1 }}
-                                    />
-                                    <span style={{ color: '#9ca3af', minWidth: '60px', textAlign: 'right' }}>/ 5</span>
-                                </div>
-                            </div>
+                            <p>60-40 Internal & External Evaluation System</p>
                         </div>
                     </div>
+                </div>
 
-                    {/* ESE Input */}
-                    <div className="form-group" style={{ marginBottom: '2rem' }}>
-                        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'white', marginBottom: '1.5rem', margin: 0 }}>End Semester Exam (40)</h2>
-                        <div>
-                            <label className="form-label">ESE Marks (out of 40)</label>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                <input
-                                    type="number"
-                                    min="0"
-                                    max="40"
-                                    value={eseMarks}
-                                    onChange={(e) => handleESEChange(parseFloat(e.target.value) || 0)}
-                                    className="form-input"
-                                    style={{ flex: 1, maxWidth: '300px' }}
-                                />
-                                <span style={{ color: '#9ca3af', minWidth: '60px', textAlign: 'right' }}>/ 40</span>
+                <div className="calc-grid">
+                    {/* Left Column - Inputs */}
+                    <div className="calc-inputs">
+                        {/* Validation Errors */}
+                        {validationErrors.length > 0 && (
+                            <div className="error-banner">
+                                {validationErrors.map((error, idx) => (
+                                    <p key={idx}>• {error}</p>
+                                ))}
                             </div>
-                        </div>
-                    </div>
+                        )}
 
-                    {/* Results */}
-                    {gradeResult && (
-                        <div>
-                            {/* Grade Results */}
-                            <div className="stats-grid" style={{ marginBottom: '2rem' }}>
-                                <div className="stat-card">
-                                    <div className="stat-label">Internal Marks</div>
-                                    <div className="stat-value blue">{gradeResult.internalMarks}</div>
-                                    <div style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.25rem' }}>out of 60</div>
-                                </div>
-
-                                <div className="stat-card">
-                                    <div className="stat-label">ESE Marks</div>
-                                    <div className="stat-value purple">{gradeResult.eseMarks}</div>
-                                    <div style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.25rem' }}>out of 40</div>
-                                </div>
-
-                                <div className="stat-card">
-                                    <div className="stat-label">Total Marks</div>
-                                    <div className="stat-value green">{gradeResult.totalMarks}</div>
-                                    <div style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.25rem' }}>out of 100</div>
-                                </div>
-
-                                <div className="stat-card">
-                                    <div className="stat-label">Grade</div>
-                                    <div style={{ fontSize: '2rem', fontWeight: 900, color: '#f59e0b', margin: 0 }}>{gradeResult.grade}</div>
-                                    <div style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.25rem' }}>({gradeResult.percentage.toFixed(1)}%)</div>
-                                </div>
+                        {/* Internal Marks Section */}
+                        <div className="input-section glass-card">
+                            <div className="section-header">
+                                <h2>Internal Marks</h2>
+                                <span className="section-max">/ 60</span>
                             </div>
-
-                            {/* What if Calculation */}
-                            <div className="form-group">
-                                <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'white', margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    <TrendingUp className="w-5 h-5 text-blue-400" />
-                                    What if I want to achieve...
-                                </h3>
-                                
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', alignItems: 'flex-end' }}>
-                                    <div>
-                                        <label className="form-label">Target Grade</label>
-                                        <select
-                                            value={targetGrade}
-                                            onChange={(e) => setTargetGrade(e.target.value)}
-                                            className="form-input"
-                                            style={{ cursor: 'pointer' }}
-                                        >
-                                            {getAvailableGrades().map(grade => (
-                                                <option key={grade} value={grade}>{grade}</option>
-                                            ))}
-                                        </select>
+                            <p className="section-desc">Continuous Evaluation</p>
+                            
+                            <div className="input-grid">
+                                <div className="input-group">
+                                    <label>Cycle Test 1</label>
+                                    <div className="input-wrapper">
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            max="20"
+                                            value={components.cycleTest1}
+                                            onChange={(e) => handleComponentChange('cycleTest1', parseFloat(e.target.value) || 0)}
+                                            className="input-glass"
+                                        />
+                                        <span className="input-max">20</span>
                                     </div>
+                                </div>
 
-                                    <div>
-                                        <div style={{ background: '#1e293b', border: '1px solid #475569', borderRadius: '0.75rem', padding: '0.75rem 1rem', textAlign: 'center' }}>
-                                            {requiredESE === null ? (
-                                                <div>
-                                                    <p style={{ color: '#9ca3af', fontSize: '0.875rem', margin: '0 0 0.25rem 0' }}>ESE Required</p>
-                                                    <p style={{ color: '#f87171', fontSize: '1.25rem', fontWeight: 900, margin: 0 }}>Not Achievable</p>
-                                                </div>
-                                            ) : requiredESE <= 0 ? (
-                                                <div>
-                                                    <p style={{ color: '#9ca3af', fontSize: '0.875rem', margin: '0 0 0.25rem 0' }}>ESE Required</p>
-                                                    <p style={{ color: '#4ade80', fontSize: '1.25rem', fontWeight: 900, margin: 0 }}>Already Achieved! ✓</p>
-                                                </div>
-                                            ) : (
-                                                <div>
-                                                    <p style={{ color: '#9ca3af', fontSize: '0.875rem', margin: '0 0 0.25rem 0' }}>ESE Required</p>
-                                                    <p style={{ color: '#60a5fa', fontSize: '1.25rem', fontWeight: 900, margin: 0 }}>{requiredESE.toFixed(1)} / 40</p>
-                                                </div>
-                                            )}
+                                <div className="input-group">
+                                    <label>Cycle Test 2</label>
+                                    <div className="input-wrapper">
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            max="20"
+                                            value={components.cycleTest2}
+                                            onChange={(e) => handleComponentChange('cycleTest2', parseFloat(e.target.value) || 0)}
+                                            className="input-glass"
+                                        />
+                                        <span className="input-max">20</span>
+                                    </div>
+                                </div>
+
+                                <div className="input-group">
+                                    <label>Assignments / Quiz</label>
+                                    <div className="input-wrapper">
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            max="10"
+                                            value={components.assignmentQuiz}
+                                            onChange={(e) => handleComponentChange('assignmentQuiz', parseFloat(e.target.value) || 0)}
+                                            className="input-glass"
+                                        />
+                                        <span className="input-max">10</span>
+                                    </div>
+                                </div>
+
+                                <div className="input-group">
+                                    <label>Attendance</label>
+                                    <div className="input-wrapper">
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            max="5"
+                                            step="0.5"
+                                            value={components.attendance}
+                                            onChange={(e) => handleComponentChange('attendance', parseFloat(e.target.value) || 0)}
+                                            className="input-glass"
+                                        />
+                                        <span className="input-max">5</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* ESE Section */}
+                        <div className="input-section glass-card">
+                            <div className="section-header">
+                                <h2>End Semester Exam</h2>
+                                <span className="section-max">/ 40</span>
+                            </div>
+                            <p className="section-desc">Final Examination</p>
+                            
+                            <div className="input-group">
+                                <label>ESE Marks Scored</label>
+                                <div className="input-wrapper">
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        max="40"
+                                        value={eseMarks}
+                                        onChange={(e) => handleESEChange(parseFloat(e.target.value) || 0)}
+                                        className="input-glass"
+                                    />
+                                    <span className="input-max">40</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right Column - Results */}
+                    <div className="calc-results">
+                        {gradeResult && (
+                            <>
+                                {/* Grade Result Card */}
+                                <div className="result-card glass-card result-grade">
+                                    <div style={{ position: 'absolute', top: '-20px', right: '20px', width: '80px', height: '80px', borderRadius: '50%', background: 'linear-gradient(135deg, #7C5CFF, #00E5FF)', filter: 'blur(40px)', opacity: 0.1 }} />
+                                    <div style={{ position: 'relative', zIndex: 10 }}>
+                                        <p className="result-label">Your Grade</p>
+                                        <div className="grade-display">
+                                            <span className="grade-letter">{gradeResult.grade}</span>
+                                            <span className="grade-percentage">{gradeResult.percentage.toFixed(1)}%</span>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    )}
+
+                                {/* Marks Breakdown */}
+                                <div className="result-card glass-card">
+                                    <p className="result-label">Marks Breakdown</p>
+                                    <div className="marks-breakdown">
+                                        <div className="breakdown-item">
+                                            <span className="breakdown-label">Internal</span>
+                                            <div className="breakdown-value cyan">{gradeResult.internalMarks.toFixed(1)}<span>/60</span></div>
+                                        </div>
+                                        <div className="breakdown-item">
+                                            <span className="breakdown-label">ESE</span>
+                                            <div className="breakdown-value purple">{gradeResult.eseMarks.toFixed(1)}<span>/40</span></div>
+                                        </div>
+                                        <div className="breakdown-item">
+                                            <span className="breakdown-label">Total</span>
+                                            <div className="breakdown-value gold">{gradeResult.totalMarks.toFixed(1)}<span>/100</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* What If Section */}
+                                <div className="result-card glass-card whatif-card">
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                                        <Zap size={16} style={{ color: '#00E5FF' }} />
+                                        <p className="result-label">What If?</p>
+                                    </div>
+                                    
+                                    <label className="whatif-label">Target Grade</label>
+                                    <select
+                                        value={targetGrade}
+                                        onChange={(e) => setTargetGrade(e.target.value)}
+                                        className="input-glass"
+                                        style={{ marginBottom: '1rem' }}
+                                    >
+                                        {getAvailableGrades().map(grade => (
+                                            <option key={grade} value={grade}>{grade}</option>
+                                        ))}
+                                    </select>
+
+                                    <div className="whatif-result">
+                                        {requiredESE === null ? (
+                                            <>
+                                                <p className="whatif-label">ESE Required</p>
+                                                <p className="whatif-value not-achievable">Not Achievable</p>
+                                            </>
+                                        ) : requiredESE <= 0 ? (
+                                            <>
+                                                <p className="whatif-label">Status</p>
+                                                <p className="whatif-value achieved">✓ Already Achieved!</p>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <p className="whatif-label">ESE Score Needed</p>
+                                                <p className="whatif-value needed">{requiredESE.toFixed(1)} / 40</p>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
         </DashboardLayout>
