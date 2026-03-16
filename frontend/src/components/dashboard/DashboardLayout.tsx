@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { Calculator, BookOpen, Heart, Settings, LogOut, LayoutDashboard, Menu, X, Shield } from 'lucide-react';
+import { Calculator, BookOpen, Heart, Settings, LogOut, LayoutDashboard, Menu, X, Shield, BarChart3 } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const { profile, signOut } = useAuth();
@@ -11,6 +11,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     const navItems = [
         { name: 'Overview', path: '/dashboard', icon: LayoutDashboard },
         { name: 'CGPA Calculator', path: '/dashboard/calculator', icon: Calculator },
+        { name: 'Analytics', path: '/dashboard/analytics', icon: BarChart3 },
         { name: 'Study Materials', path: '/dashboard/materials', icon: BookOpen },
         { name: 'StudyMatch', path: '/dashboard/studymatch', icon: Heart },
     ];
