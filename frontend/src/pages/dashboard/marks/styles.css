@@ -13,6 +13,9 @@
   border-radius: 1.5rem;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .calc-header::before {
@@ -63,6 +66,56 @@
   font-size: 0.875rem;
   color: #94a3b8;
   margin: 0;
+}
+
+/* ─── Settings Button ─── */
+.settings-btn {
+  position: relative;
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 229, 255, 0.1);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  border-radius: 0.75rem;
+  color: #00E5FF;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.settings-btn:hover {
+  background: rgba(0, 229, 255, 0.2);
+  border-color: rgba(0, 229, 255, 0.5);
+}
+
+/* ─── Settings Panel ─── */
+.settings-panel {
+  padding: 1.5rem;
+  border-color: rgba(0, 229, 255, 0.2);
+  background: rgba(0, 229, 255, 0.03);
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.setting-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.setting-item label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 /* ─── Grid Layout ─── */

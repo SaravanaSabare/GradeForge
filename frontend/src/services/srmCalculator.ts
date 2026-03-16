@@ -6,10 +6,17 @@
  */
 
 export interface ComponentMarks {
-  cycleTest1: number; // max 20
-  cycleTest2: number; // max 20
-  assignmentQuiz: number; // max 10
-  attendance: number; // max 5 (optional)
+  cycleTest1: number;
+  cycleTest2: number;
+  assignmentQuiz: number;
+  attendance: number;
+}
+
+export interface ComponentMaxMarks {
+  cycleTest1: number;
+  cycleTest2: number;
+  assignmentQuiz: number;
+  attendance: number;
 }
 
 export interface GradeResult {
@@ -20,6 +27,14 @@ export interface GradeResult {
   grade: string; // O, A+, A, B+, B, C, F
   gradePoint: number; // 10, 9, 8, 7, 6, 5, 0
 }
+
+// Default component maximums (can be overridden)
+export const DEFAULT_COMPONENT_MAX: ComponentMaxMarks = {
+  cycleTest1: 20,
+  cycleTest2: 20,
+  assignmentQuiz: 10,
+  attendance: 5,
+};
 
 // SRM Grade mapping (Academic Regulation 2021)
 const gradeMapping = [
@@ -36,16 +51,19 @@ const gradeMapping = [
  * Calculate internal marks from component scores
  * Formula: (CT1 + CT2 + Assignment + Attendance) normalized to 60
  */
-export function calculateInternalMarks(components: ComponentMarks): number {
+export function calculateInternalMarks(
+  components: ComponentMarks,
+  maxMarks: ComponentMaxMarks = DEFAULT_COMPONENT_MAX
+): number {
   // Maximum possible marks in continuous evaluation
-  const maxInternal = 20 + 20 + 10 + 5; // 55 marks total
+  const maxInternal = maxMarks.cycleTest1 + maxMarks.cycleTest2 + maxMarks.assignmentQuiz + maxMarks.attendance;
   
-  // Sum obtained marks (with validation)
+  // Sum obtained marks (with validation against max)
   const obtainedMarks = 
-    Math.min(components.cycleTest1, 20) +
-    Math.min(components.cycleTest2, 20) +
-    Math.min(components.assignmentQuiz, 10) +
-    Math.min(components.attendance, 5);
+    Math.min(components.cycleTest1, maxMarks.cycleTest1) +
+    Math.min(components.cycleTest2, maxMarks.cycleTest2) +
+    Math.min(components.assignmentQuiz, maxMarks.assignmentQuiz) +
+    Math.min(components.attendance, maxMarks.attendance);
   
   // Normalize to 60 marks
   // Formula: (obtained / maxPossible) * 60
@@ -74,9 +92,10 @@ export function calculateGrade(totalMarks: number): { grade: string; gradePoint:
  */
 export function calculateGradeResult(
   components: ComponentMarks,
-  eseMarks: number
+  eseMarks: number,
+  maxMarks: ComponentMaxMarks = DEFAULT_COMPONENT_MAX
 ): GradeResult {
-  const internalMarks = calculateInternalMarks(components);
+  const internalMarks = calculateInternalMarks(components, maxMarks);
   const validESE = Math.min(Math.max(eseMarks, 0), 40); // Clamp between 0-40
   const totalMarks = internalMarks + validESE;
   const percentage = (totalMarks / 100) * 100;
@@ -97,9 +116,10 @@ export function calculateGradeResult(
  */
 export function calculateRequiredESE(
   components: ComponentMarks,
-  targetGrade: string
+  targetGrade: string,
+  maxMarks: ComponentMaxMarks = DEFAULT_COMPONENT_MAX
 ): number | null {
-  const internalMarks = calculateInternalMarks(components);
+  const internalMarks = calculateInternalMarks(components, maxMarks);
   
   // Find minimum percentage needed for target grade
   const targetMapping = gradeMapping.find(m => m.grade === targetGrade);
@@ -117,25 +137,28 @@ export function calculateRequiredESE(
 }
 
 /**
- * Validate component marks
+ * Validate component marks against their maximums
  */
-export function validateComponentMarks(components: ComponentMarks): {
+export function validateComponentMarks(
+  components: ComponentMarks,
+  maxMarks: ComponentMaxMarks = DEFAULT_COMPONENT_MAX
+): {
   isValid: boolean;
   errors: string[];
 } {
   const errors: string[] = [];
   
-  if (components.cycleTest1 < 0 || components.cycleTest1 > 20) {
-    errors.push('Cycle Test 1 must be between 0-20');
+  if (components.cycleTest1 < 0 || components.cycleTest1 > maxMarks.cycleTest1) {
+    errors.push(`Cycle Test 1 must be between 0-${maxMarks.cycleTest1}`);
   }
-  if (components.cycleTest2 < 0 || components.cycleTest2 > 20) {
-    errors.push('Cycle Test 2 must be between 0-20');
+  if (components.cycleTest2 < 0 || components.cycleTest2 > maxMarks.cycleTest2) {
+    errors.push(`Cycle Test 2 must be between 0-${maxMarks.cycleTest2}`);
   }
-  if (components.assignmentQuiz < 0 || components.assignmentQuiz > 10) {
-    errors.push('Assignment/Quiz must be between 0-10');
+  if (components.assignmentQuiz < 0 || components.assignmentQuiz > maxMarks.assignmentQuiz) {
+    errors.push(`Assignment/Quiz must be between 0-${maxMarks.assignmentQuiz}`);
   }
-  if (components.attendance < 0 || components.attendance > 5) {
-    errors.push('Attendance must be between 0-5');
+  if (components.attendance < 0 || components.attendance > maxMarks.attendance) {
+    errors.push(`Attendance must be between 0-${maxMarks.attendance}`);
   }
   
   return {

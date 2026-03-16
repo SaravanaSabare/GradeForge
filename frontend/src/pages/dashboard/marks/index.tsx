@@ -3,13 +3,16 @@ import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 import {
     Calculator,
     Zap,
+    Settings,
 } from 'lucide-react';
 import {
     calculateGradeResult,
     calculateRequiredESE,
     validateComponentMarks,
     getAvailableGrades,
+    DEFAULT_COMPONENT_MAX,
     type ComponentMarks,
+    type ComponentMaxMarks,
     type GradeResult,
 } from '../../../services/srmCalculator';
 import './styles.css';
@@ -23,6 +26,9 @@ export default function MarkCalculator() {
         attendance: 0,
     });
     
+    // Component maximum marks (configurable)
+    const [maxMarks, setMaxMarks] = useState<ComponentMaxMarks>(DEFAULT_COMPONENT_MAX);
+    
     // ESE marks
     const [eseMarks, setESEMarks] = useState<number>(0);
     
@@ -35,18 +41,21 @@ export default function MarkCalculator() {
     // Grade result
     const [gradeResult, setGradeResult] = useState<GradeResult | null>(null);
     
+    // Settings panel visibility
+    const [showSettings, setShowSettings] = useState<boolean>(false);
+    
     // Recalculate whenever inputs change
     useEffect(() => {
-        const { isValid, errors } = validateComponentMarks(components);
+        const { isValid, errors } = validateComponentMarks(components, maxMarks);
         setValidationErrors(errors);
         
         if (isValid) {
-            const result = calculateGradeResult(components, eseMarks);
+            const result = calculateGradeResult(components, eseMarks, maxMarks);
             setGradeResult(result);
         } else {
             setGradeResult(null);
         }
-    }, [components, eseMarks]);
+    }, [components, eseMarks, maxMarks]);
     
     const handleComponentChange = (key: keyof ComponentMarks, value: number) => {
         setComponents(prev => ({
@@ -55,11 +64,18 @@ export default function MarkCalculator() {
         }));
     };
     
+    const handleMaxMarkChange = (key: keyof ComponentMaxMarks, value: number) => {
+        setMaxMarks(prev => ({
+            ...prev,
+            [key]: Math.max(1, value),
+        }));
+    };
+    
     const handleESEChange = (value: number) => {
         setESEMarks(Math.max(0, Math.min(40, value)));
     };
     
-    const requiredESE = gradeResult ? calculateRequiredESE(components, targetGrade) : null;
+    const requiredESE = gradeResult ? calculateRequiredESE(components, targetGrade, maxMarks) : null;
 
     return (
         <DashboardLayout>
@@ -75,7 +91,89 @@ export default function MarkCalculator() {
                             <p>60-40 Internal & External Evaluation System</p>
                         </div>
                     </div>
+                    <button 
+                        onClick={() => setShowSettings(!showSettings)}
+                        className="settings-btn"
+                        title="Configure component maximums"
+                    >
+                        <Settings size={18} />
+                    </button>
                 </div>
+
+                {/* Settings Panel */}
+                {showSettings && (
+                    <div className="settings-panel glass-card">
+                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: '0 0 1rem 0', fontSize: '1rem', fontWeight: 600, color: 'white' }}>
+                            <Settings size={16} style={{ color: '#00E5FF' }} />
+                            Component Maximums
+                        </h3>
+                        <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginBottom: '1.5rem' }}>
+                            Adjust the maximum marks for each component (subject to change)
+                        </p>
+                        
+                        <div className="settings-grid">
+                            <div className="setting-item">
+                                <label>Cycle Test 1 Max</label>
+                                <input
+                                    type="number"
+                                    min="1"
+                                    value={maxMarks.cycleTest1}
+                                    onChange={(e) => handleMaxMarkChange('cycleTest1', parseFloat(e.target.value) || 1)}
+                                    className="input-glass"
+                                />
+                            </div>
+                            <div className="setting-item">
+                                <label>Cycle Test 2 Max</label>
+                                <input
+                                    type="number"
+                                    min="1"
+                                    value={maxMarks.cycleTest2}
+                                    onChange={(e) => handleMaxMarkChange('cycleTest2', parseFloat(e.target.value) || 1)}
+                                    className="input-glass"
+                                />
+                            </div>
+                            <div className="setting-item">
+                                <label>Assignments/Quiz Max</label>
+                                <input
+                                    type="number"
+                                    min="1"
+                                    value={maxMarks.assignmentQuiz}
+                                    onChange={(e) => handleMaxMarkChange('assignmentQuiz', parseFloat(e.target.value) || 1)}
+                                    className="input-glass"
+                                />
+                            </div>
+                            <div className="setting-item">
+                                <label>Attendance Max</label>
+                                <input
+                                    type="number"
+                                    min="1"
+                                    step="0.5"
+                                    value={maxMarks.attendance}
+                                    onChange={(e) => handleMaxMarkChange('attendance', parseFloat(e.target.value) || 1)}
+                                    className="input-glass"
+                                />
+                            </div>
+                        </div>
+
+                        <button 
+                            onClick={() => setShowSettings(false)}
+                            style={{ 
+                                marginTop: '1rem', 
+                                padding: '0.5rem 1rem', 
+                                background: 'rgba(124, 92, 255, 0.2)', 
+                                border: '1px solid rgba(124, 92, 255, 0.3)',
+                                borderRadius: '0.5rem',
+                                color: '#7C5CFF',
+                                cursor: 'pointer',
+                                fontSize: '0.875rem',
+                                fontWeight: 500,
+                                transition: 'all 0.2s ease'
+                            }}
+                        >
+                            Done
+                        </button>
+                    </div>
+                )}
 
                 <div className="calc-grid">
                     {/* Left Column - Inputs */}
@@ -104,12 +202,12 @@ export default function MarkCalculator() {
                                         <input
                                             type="number"
                                             min="0"
-                                            max="20"
+                                            max={maxMarks.cycleTest1}
                                             value={components.cycleTest1}
                                             onChange={(e) => handleComponentChange('cycleTest1', parseFloat(e.target.value) || 0)}
                                             className="input-glass"
                                         />
-                                        <span className="input-max">20</span>
+                                        <span className="input-max">{maxMarks.cycleTest1}</span>
                                     </div>
                                 </div>
 
@@ -119,12 +217,12 @@ export default function MarkCalculator() {
                                         <input
                                             type="number"
                                             min="0"
-                                            max="20"
+                                            max={maxMarks.cycleTest2}
                                             value={components.cycleTest2}
                                             onChange={(e) => handleComponentChange('cycleTest2', parseFloat(e.target.value) || 0)}
                                             className="input-glass"
                                         />
-                                        <span className="input-max">20</span>
+                                        <span className="input-max">{maxMarks.cycleTest2}</span>
                                     </div>
                                 </div>
 
@@ -134,12 +232,12 @@ export default function MarkCalculator() {
                                         <input
                                             type="number"
                                             min="0"
-                                            max="10"
+                                            max={maxMarks.assignmentQuiz}
                                             value={components.assignmentQuiz}
                                             onChange={(e) => handleComponentChange('assignmentQuiz', parseFloat(e.target.value) || 0)}
                                             className="input-glass"
                                         />
-                                        <span className="input-max">10</span>
+                                        <span className="input-max">{maxMarks.assignmentQuiz}</span>
                                     </div>
                                 </div>
 
@@ -149,13 +247,13 @@ export default function MarkCalculator() {
                                         <input
                                             type="number"
                                             min="0"
-                                            max="5"
+                                            max={maxMarks.attendance}
                                             step="0.5"
                                             value={components.attendance}
                                             onChange={(e) => handleComponentChange('attendance', parseFloat(e.target.value) || 0)}
                                             className="input-glass"
                                         />
-                                        <span className="input-max">5</span>
+                                        <span className="input-max">{maxMarks.attendance}</span>
                                     </div>
                                 </div>
                             </div>
