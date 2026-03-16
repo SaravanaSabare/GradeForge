@@ -123,6 +123,7 @@ function validateGrade(grade: string): string {
  */
 export async function getStudyRecommendations(
     weakSubjects: { name: string; gpa: number }[],
+    allSubjects: { name: string; gpa: number }[],
     averageGpa: number,
     semesterCount: number
 ): Promise<string> {
@@ -130,23 +131,29 @@ export async function getStudyRecommendations(
         throw new Error('Groq API key is not configured.');
     }
 
-    if (weakSubjects.length === 0) {
-        return "You're performing consistently well across all subjects! Keep maintaining your high standards and continue exploring advanced topics in your areas of interest.";
-    }
+    // Build comprehensive context
+    const subjectList = allSubjects.map(s => `${s.name} (${s.gpa.toFixed(2)})`).join(', ');
+    const weakList = weakSubjects.length > 0 
+        ? weakSubjects.map(s => `${s.name} (${s.gpa.toFixed(2)})`).join(', ')
+        : 'None - consistently strong across all subjects';
 
-    const subjectList = weakSubjects.map(s => `${s.name} (GPA: ${s.gpa.toFixed(2)})`).join(', ');
+    const prompt = `You are an expert academic advisor analyzing a student's performance.
 
-    const prompt = `You are an expert academic advisor. A student has the following weak subjects: ${subjectList}
+Student Profile:
+- Overall Average GPA: ${averageGpa.toFixed(2)}/10
+- Semesters Completed: ${semesterCount}
+- All Subjects: ${subjectList}
+- Areas Needing Improvement: ${weakList}
 
-Their overall average GPA is ${averageGpa.toFixed(2)} and they've completed ${semesterCount} semester(s).
+Provide SPECIFIC, ACTIONABLE study recommendations:
 
-Provide BRIEF, actionable study recommendations:
-1. Identify the common reasons why these subjects might be challenging
-2. Suggest 2-3 specific study strategies tailored to these subjects
-3. Recommend time management approach for next semester
-4. Suggest one resource type (book, video, practice problems, etc.) that would help most
+1. **Performance Analysis**: Briefly assess their current standing (identify patterns, strengths, weaknesses if any)
+2. **Study Strategies**: 2-3 specific study techniques tailored to their situation (not generic)
+3. **Roadmap**: What to focus on next semester based on their pattern
+4. **Resources**: Specific resource types (books, platforms, practice problems, etc.) suited to their weak areas
+5. **Motivation**: Brief encouraging insight specific to their performance
 
-Keep the response concise (max 150 words), practical, and encouraging. Format as a few short paragraphs.`;
+Keep it practical (max 180 words), honest, and actionable. Avoid generic platitudes. Format as short paragraphs.`;
 
     const response = await fetch(GROQ_URL, {
         method: 'POST',
@@ -160,7 +167,7 @@ Keep the response concise (max 150 words), practical, and encouraging. Format as
                 role: 'user',
                 content: prompt,
             }],
-            temperature: 0.7,
+            temperature: 0.8,
             max_tokens: 512,
         }),
     });

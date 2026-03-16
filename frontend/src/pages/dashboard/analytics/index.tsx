@@ -174,7 +174,12 @@ export default function Analytics() {
                     .map((s) => ({ name: s.subject_name, gpa: s.grade_points }))
                     .slice(0, 5); // Top 5 weakest
 
-                const recs = await getStudyRecommendations(weakSubjects, avgGpa, semesters.length);
+                // All subjects for context
+                const allSubjects = subjects
+                    .map((s) => ({ name: s.subject_name, gpa: s.grade_points }))
+                    .slice(0, 10); // Top 10 for context
+
+                const recs = await getStudyRecommendations(weakSubjects, allSubjects, avgGpa, semesters.length);
                 setRecommendations(recs);
             } catch (err) {
                 console.error('Error fetching recommendations:', err);
