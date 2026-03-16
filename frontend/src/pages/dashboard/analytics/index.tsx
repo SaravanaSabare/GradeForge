@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext';
 import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 import { supabase } from '../../../services/supabase';
@@ -70,7 +71,14 @@ export default function Analytics() {
                 .eq('user_id', user!.id)
                 .order('semester');
 
-            if (error || !gradeData) {
+            if (error) {
+                console.error('Analytics error:', error);
+                setLoading(false);
+                return;
+            }
+
+            if (!gradeData || gradeData.length === 0) {
+                console.log('No grade data found');
                 setLoading(false);
                 return;
             }
@@ -281,8 +289,26 @@ export default function Analytics() {
     if (loading) {
         return (
             <DashboardLayout>
-                <div style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>
-                    Loading analytics...
+                <div style={{ padding: 60, textAlign: 'center', color: '#64748b' }}>
+                    <div style={{ fontSize: 18, marginBottom: 20 }}>Loading analytics...</div>
+                    <div style={{ display: 'inline-block', width: 40, height: 40, borderRadius: '50%', border: '3px solid rgba(124, 92, 255, 0.2)', borderTopColor: '#7C5CFF', animation: 'spin 1s linear infinite' }} />
+                </div>
+            </DashboardLayout>
+        );
+    }
+
+    if (semesters.length === 0) {
+        return (
+            <DashboardLayout>
+                <div style={{ maxWidth: 1400, margin: '0 auto', padding: 60, textAlign: 'center' }}>
+                    <div style={{ fontSize: 48, marginBottom: 20 }}>📊</div>
+                    <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: '#cbd5e1' }}>No Analytics Available Yet</h2>
+                    <p style={{ fontSize: 14, color: '#94a3b8', marginBottom: 24, maxWidth: 400, margin: '0 auto 24px' }}>
+                        You haven't added any grades yet. Start by adding your semester grades in the calculator to see your analytics dashboard!
+                    </p>
+                    <Link to="/dashboard/calculator" className="btn btn-primary">
+                        📝 Add Your First Grades
+                    </Link>
                 </div>
             </DashboardLayout>
         );
