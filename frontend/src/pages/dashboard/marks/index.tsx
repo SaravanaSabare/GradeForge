@@ -10,6 +10,7 @@ import {
     Loader2,
     ChevronDown,
     ChevronUp,
+    Sparkles,
 } from 'lucide-react';
 import type {
     SubjectMarks,
@@ -154,288 +155,301 @@ export default function MarkCalculator() {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 p-4 sm:p-8">
-                <div className="max-w-6xl mx-auto">
+            <div className="min-h-screen bg-slate-900 p-4 sm:p-8">
+                <div className="max-w-7xl mx-auto">
                     {/* Header */}
-                    <div className="mb-8">
-                        <div className="flex items-center gap-3 mb-2">
-                            <Award className="w-8 h-8 text-amber-500" />
-                            <h1 className="text-4xl font-bold text-white">Mark Calculator</h1>
-                        </div>
-                        <p className="text-gray-400">Track internal marks across subjects with weighted grading</p>
-                    </div>
-
-                    {/* Overall Stats */}
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                        <div className="backdrop-blur-md bg-slate-700/30 rounded-2xl border border-slate-600/50 p-6">
-                            <p className="text-gray-400 text-sm mb-2">Total Subjects</p>
-                            <p className="text-3xl font-bold text-white">{allSubjects.length}</p>
-                        </div>
-
-                        <div className="backdrop-blur-md bg-slate-700/30 rounded-2xl border border-slate-600/50 p-6">
-                            <p className="text-gray-400 text-sm mb-2">Average Percentage</p>
-                            <p className="text-3xl font-bold text-blue-400">
-                                {allSubjects.length > 0
-                                    ? (allSubjects.reduce((sum, s) => sum + s.percentage, 0) / allSubjects.length).toFixed(1)
-                                    : 0}
-                                %
-                            </p>
-                        </div>
-
-                        <div className="backdrop-blur-md bg-slate-700/30 rounded-2xl border border-slate-600/50 p-6">
-                            <p className="text-gray-400 text-sm mb-2">Highest Score</p>
-                            <p className="text-3xl font-bold text-green-400">
-                                {allSubjects.length > 0 ? Math.max(...allSubjects.map(s => s.percentage)).toFixed(1) : 0}%
-                            </p>
-                        </div>
-
-                        <div className="backdrop-blur-md bg-slate-700/30 rounded-2xl border border-slate-600/50 p-6">
-                            <p className="text-gray-400 text-sm mb-2">Lowest Score</p>
-                            <p className="text-3xl font-bold text-red-400">
-                                {allSubjects.length > 0 ? Math.min(...allSubjects.map(s => s.percentage)).toFixed(1) : 0}%
-                            </p>
+                    <div className="mb-12">
+                        <div className="flex items-start justify-between mb-6">
+                            <div>
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div className="p-3 bg-linear-to-br from-amber-500 to-orange-600 rounded-xl">
+                                        <Award className="w-6 h-6 text-white" />
+                                    </div>
+                                    <h1 className="text-4xl font-black text-white">Mark Calculator</h1>
+                                </div>
+                                <p className="text-gray-400 text-lg">Track and analyze your internal marks with weighted grading</p>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Subject Selection and Add Component */}
-                    <div className="backdrop-blur-md bg-slate-700/30 rounded-2xl border border-slate-600/50 p-6 mb-8">
-                        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                            <div className="flex-1">
-                                <label className="block text-sm font-medium text-gray-300 mb-2">Select Subject</label>
+                    {/* Stats Grid */}
+                    {allSubjects.length > 0 && (
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                            <div className="group relative bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition">
+                                <div className="absolute inset-0 bg-linear-to-br from-blue-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition" />
+                                <div className="relative">
+                                    <p className="text-gray-400 text-sm font-medium mb-1">Total Subjects</p>
+                                    <p className="text-4xl font-black text-blue-400">{allSubjects.length}</p>
+                                </div>
+                            </div>
+
+                            <div className="group relative bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition">
+                                <div className="absolute inset-0 bg-linear-to-br from-purple-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition" />
+                                <div className="relative">
+                                    <p className="text-gray-400 text-sm font-medium mb-1">Average %</p>
+                                    <p className="text-4xl font-black text-purple-400">
+                                        {(allSubjects.reduce((sum, s) => sum + s.percentage, 0) / allSubjects.length).toFixed(1)}%
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="group relative bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700/50 hover:border-green-500/50 transition">
+                                <div className="absolute inset-0 bg-linear-to-br from-green-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition" />
+                                <div className="relative">
+                                    <p className="text-gray-400 text-sm font-medium mb-1">Highest</p>
+                                    <p className="text-4xl font-black text-green-400">
+                                        {Math.max(...allSubjects.map(s => s.percentage)).toFixed(1)}%
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="group relative bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700/50 hover:border-red-500/50 transition">
+                                <div className="absolute inset-0 bg-linear-to-br from-red-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition" />
+                                <div className="relative">
+                                    <p className="text-gray-400 text-sm font-medium mb-1">Lowest</p>
+                                    <p className="text-4xl font-black text-red-400">
+                                        {Math.min(...allSubjects.map(s => s.percentage)).toFixed(1)}%
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Subject Panel */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                        <div className="lg:col-span-2 bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700/50">
+                            <label className="block text-sm font-bold text-white mb-3 uppercase tracking-wider">Select Subject</label>
+                            <input
+                                type="text"
+                                placeholder="Type subject name..."
+                                value={selectedSubject}
+                                onChange={(e) => {
+                                    setSelectedSubject(e.target.value);
+                                    setNewComponent({ component_type: 'Quiz', max_marks: 10, weight: 10, obtained_marks: '' });
+                                }}
+                                className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg font-medium"
+                                list="subjects"
+                            />
+                            <datalist id="subjects">
+                                {allSubjects.map(subject => (
+                                    <option key={subject.subject_name} value={subject.subject_name} />
+                                ))}
+                            </datalist>
+                        </div>
+
+                        {selectedSubject && (
+                            <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700/50">
+                                <label className="block text-sm font-bold text-white mb-3 uppercase tracking-wider">Target %</label>
                                 <input
-                                    type="text"
-                                    placeholder="Enter subject name"
-                                    value={selectedSubject}
-                                    onChange={(e) => {
-                                        setSelectedSubject(e.target.value);
-                                        setNewComponent({
-                                            component_type: 'Quiz',
-                                            max_marks: 10,
-                                            weight: 10,
-                                            obtained_marks: '',
-                                        });
-                                    }}
-                                    className="w-full bg-slate-600/50 border border-slate-500 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    list="subjects"
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    placeholder="e.g., 85"
+                                    value={targetMarks[selectedSubject] || ''}
+                                    onChange={(e) =>
+                                        setTargetMarks({ ...targetMarks, [selectedSubject]: Number(e.target.value) })
+                                    }
+                                    className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 text-lg font-medium"
                                 />
-                                <datalist id="subjects">
-                                    {allSubjects.map(subject => (
-                                        <option key={subject.subject_name} value={subject.subject_name} />
-                                    ))}
-                                </datalist>
-                            </div>
-
-                            {selectedSubject && (
-                                <div className="flex-1">
-                                    <label className="block text-sm font-medium text-gray-300 mb-2">Target %</label>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        max="100"
-                                        placeholder="e.g., 80"
-                                        value={targetMarks[selectedSubject] || ''}
-                                        onChange={(e) =>
-                                            setTargetMarks({
-                                                ...targetMarks,
-                                                [selectedSubject]: Number(e.target.value),
-                                            })
-                                        }
-                                        className="w-full bg-slate-600/50 border border-slate-500 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                </div>
-                            )}
-
-                            <div className="flex items-end">
-                                <button
-                                    onClick={() => setShowAddComponent(!showAddComponent)}
-                                    className="w-full sm:w-auto flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg transition"
-                                >
-                                    <Plus className="w-5 h-5" />
-                                    Add Component
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Add Component Form */}
-                        {showAddComponent && (
-                            <div className="bg-slate-600/30 rounded-lg p-4 border border-slate-500/50">
-                                <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 mb-4">
-                                    <input
-                                        type="text"
-                                        placeholder="Type (Quiz, Assignment...)"
-                                        value={newComponent.component_type}
-                                        onChange={(e) =>
-                                            setNewComponent({ ...newComponent, component_type: e.target.value })
-                                        }
-                                        className="bg-slate-600/50 border border-slate-500 rounded-lg px-3 py-2 text-white text-sm"
-                                    />
-
-                                    <input
-                                        type="number"
-                                        placeholder="Max Marks"
-                                        value={newComponent.max_marks}
-                                        onChange={(e) =>
-                                            setNewComponent({ ...newComponent, max_marks: Number(e.target.value) })
-                                        }
-                                        className="bg-slate-600/50 border border-slate-500 rounded-lg px-3 py-2 text-white text-sm"
-                                    />
-
-                                    <input
-                                        type="number"
-                                        placeholder="Weight %"
-                                        value={newComponent.weight}
-                                        onChange={(e) =>
-                                            setNewComponent({ ...newComponent, weight: Number(e.target.value) })
-                                        }
-                                        className="bg-slate-600/50 border border-slate-500 rounded-lg px-3 py-2 text-white text-sm"
-                                    />
-
-                                    <input
-                                        type="number"
-                                        placeholder="Obtained"
-                                        value={newComponent.obtained_marks}
-                                        onChange={(e) =>
-                                            setNewComponent({ ...newComponent, obtained_marks: e.target.value })
-                                        }
-                                        className="bg-slate-600/50 border border-slate-500 rounded-lg px-3 py-2 text-white text-sm"
-                                    />
-
-                                    <button
-                                        onClick={handleAddComponent}
-                                        disabled={saving}
-                                        className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white font-medium px-4 py-2 rounded-lg transition text-sm"
-                                    >
-                                        {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                                    </button>
-                                </div>
                             </div>
                         )}
                     </div>
 
-                    {/* Subjects Grid */}
-                    <div className="space-y-4">
-                        {allSubjects.map(subject => (
-                            <div
-                                key={subject.subject_name}
-                                className="backdrop-blur-md bg-slate-700/30 rounded-2xl border border-slate-600/50 overflow-hidden hover:border-slate-500 transition"
-                            >
-                                {/* Subject Header */}
-                                <div
-                                    onClick={() =>
-                                        setExpandedSubject(expandedSubject === subject.subject_name ? null : subject.subject_name)
+                    {/* Add Component Button */}
+                    <div className="mb-8">
+                        <button
+                            onClick={() => setShowAddComponent(!showAddComponent)}
+                            className="group w-full bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold px-6 py-4 rounded-2xl transition shadow-lg hover:shadow-blue-500/20 flex items-center justify-center gap-3 text-lg"
+                        >
+                            <Plus className="w-6 h-6 group-hover:scale-110 transition" />
+                            Add Component
+                        </button>
+                    </div>
+
+                    {/* Add Component Form */}
+                    {showAddComponent && (
+                        <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-8 border border-slate-700/50 mb-8">
+                            <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                                <Sparkles className="w-5 h-5 text-amber-400" />
+                                New Component
+                            </h3>
+                            <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
+                                <input
+                                    type="text"
+                                    placeholder="Type"
+                                    value={newComponent.component_type}
+                                    onChange={(e) =>
+                                        setNewComponent({ ...newComponent, component_type: e.target.value })
                                     }
-                                    className="p-6 cursor-pointer hover:bg-slate-600/20 transition"
+                                    className="bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                                />
+
+                                <input
+                                    type="number"
+                                    placeholder="Max"
+                                    value={newComponent.max_marks}
+                                    onChange={(e) =>
+                                        setNewComponent({ ...newComponent, max_marks: Number(e.target.value) })
+                                    }
+                                    className="bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                                />
+
+                                <input
+                                    type="number"
+                                    placeholder="Weight %"
+                                    value={newComponent.weight}
+                                    onChange={(e) =>
+                                        setNewComponent({ ...newComponent, weight: Number(e.target.value) })
+                                    }
+                                    className="bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                                />
+
+                                <input
+                                    type="number"
+                                    placeholder="Got"
+                                    value={newComponent.obtained_marks}
+                                    onChange={(e) =>
+                                        setNewComponent({ ...newComponent, obtained_marks: e.target.value })
+                                    }
+                                    className="bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                                />
+
+                                <button
+                                    onClick={handleAddComponent}
+                                    disabled={saving}
+                                    className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white font-bold px-6 py-3 rounded-xl transition shadow-lg hover:shadow-green-500/20"
                                 >
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-3 mb-2">
-                                                <h3 className="text-xl font-bold text-white">{subject.subject_name}</h3>
-                                                <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                                                    subject.grade === 'O' ? 'bg-orange-500/20 text-orange-300' :
-                                                    subject.grade === 'A+' ? 'bg-red-500/20 text-red-300' :
-                                                    subject.grade === 'A' ? 'bg-purple-500/20 text-purple-300' :
-                                                    subject.grade === 'B+' ? 'bg-blue-500/20 text-blue-300' :
-                                                    'bg-gray-500/20 text-gray-300'
-                                                }`}>
-                                                    {subject.grade}
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center gap-4 text-sm text-gray-400">
-                                                <span>Marks: {subject.total_obtained}/{subject.total_max}</span>
-                                                <span>Percentage: {subject.percentage.toFixed(1)}%</span>
-                                            </div>
-                                        </div>
+                                    {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                                </button>
+                            </div>
+                        </div>
+                    )}
 
-                                        <div className="flex items-center gap-4">
-                                            {targetMarks[subject.subject_name] && (
-                                                <div className="text-right">
-                                                    <p className="text-xs text-gray-400">Target: {targetMarks[subject.subject_name]}%</p>
-                                                    {canAchieveTarget(subject) ? (
-                                                        <p className="text-xs text-green-400 font-semibold">
-                                                            Need: {calculateRequiredMarks(subject)?.toFixed(1)} marks
-                                                        </p>
-                                                    ) : (
-                                                        <p className="text-xs text-red-400 font-semibold">Not achievable</p>
-                                                    )}
+                    {/* Subjects */}
+                    <div className="space-y-4">
+                        {allSubjects.length === 0 ? (
+                            <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl border border-slate-700/50 p-12 text-center">
+                                <AlertCircle className="w-16 h-16 text-slate-600 mx-auto mb-4" />
+                                <p className="text-gray-400 text-lg">No subjects yet. Add a component to get started!</p>
+                            </div>
+                        ) : (
+                            allSubjects.map(subject => (
+                                <div
+                                    key={subject.subject_name}
+                                    className="group bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl border border-slate-700/50 overflow-hidden hover:border-slate-600 transition"
+                                >
+                                    {/* Subject Header */}
+                                    <div
+                                        onClick={() =>
+                                            setExpandedSubject(expandedSubject === subject.subject_name ? null : subject.subject_name)
+                                        }
+                                        className="p-6 cursor-pointer hover:bg-slate-700/30 transition"
+                                    >
+                                        <div className="flex items-center justify-between gap-4 mb-4">
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center gap-3 mb-3 flex-wrap">
+                                                    <h3 className="text-2xl font-black text-white truncate">{subject.subject_name}</h3>
+                                                    <span className={`px-4 py-1 rounded-full text-sm font-bold ${
+                                                        subject.grade === 'O' ? 'bg-orange-500/20 text-orange-300' :
+                                                        subject.grade === 'A+' ? 'bg-red-500/20 text-red-300' :
+                                                        subject.grade === 'A' ? 'bg-purple-500/20 text-purple-300' :
+                                                        subject.grade === 'B+' ? 'bg-blue-500/20 text-blue-300' :
+                                                        'bg-gray-500/20 text-gray-300'
+                                                    }`}>
+                                                        {subject.grade}
+                                                    </span>
                                                 </div>
-                                            )}
-                                            {expandedSubject === subject.subject_name ? (
-                                                <ChevronUp className="w-5 h-5 text-blue-400" />
-                                            ) : (
-                                                <ChevronDown className="w-5 h-5 text-gray-500" />
-                                            )}
+                                                <div className="flex flex-wrap gap-4 text-sm text-gray-400">
+                                                    <span className="font-semibold">Marks: <span className="text-white">{subject.total_obtained.toFixed(1)}/{subject.total_max}</span></span>
+                                                    <span className="font-semibold">Score: <span className="text-white">{subject.percentage.toFixed(1)}%</span></span>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-4">
+                                                {targetMarks[subject.subject_name] && (
+                                                    <div className="text-right bg-slate-700/30 rounded-xl px-4 py-3 min-w-max">
+                                                        <p className="text-xs text-gray-400 uppercase font-bold tracking-wider">Target</p>
+                                                        <p className="text-xl font-black text-white">{targetMarks[subject.subject_name]}%</p>
+                                                        {canAchieveTarget(subject) ? (
+                                                            <p className="text-xs text-green-400 font-bold mt-1">
+                                                                Need: {calculateRequiredMarks(subject)?.toFixed(1)} more
+                                                            </p>
+                                                        ) : (
+                                                            <p className="text-xs text-red-400 font-bold mt-1">Not achievable</p>
+                                                        )}
+                                                    </div>
+                                                )}
+                                                {expandedSubject === subject.subject_name ? (
+                                                    <ChevronUp className="w-6 h-6 text-blue-400 shrink-0" />
+                                                ) : (
+                                                    <ChevronDown className="w-6 h-6 text-gray-500 shrink-0" />
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Progress Bar */}
+                                        <div className="h-3 bg-slate-700/50 rounded-full overflow-hidden">
+                                            <div
+                                                className="h-full bg-linear-to-r from-blue-500 to-cyan-400 transition-all duration-500"
+                                                style={{ width: `${Math.min(subject.percentage, 100)}%` }}
+                                            />
                                         </div>
                                     </div>
 
-                                    {/* Progress Bar */}
-                                    <div className="mt-4 h-2 bg-slate-600/50 rounded-full overflow-hidden">
-                                        <div
-                                            className="h-full bg-linear-to-r from-blue-500 to-blue-400 transition-all"
-                                            style={{ width: `${Math.min(subject.percentage, 100)}%` }}
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Components List */}
-                                {expandedSubject === subject.subject_name && (
-                                    <div className="bg-slate-800/50 border-t border-slate-600/50 p-6">
-                                        <div className="space-y-3">
+                                    {/* Components List */}
+                                    {expandedSubject === subject.subject_name && (
+                                        <div className="bg-slate-900/50 border-t border-slate-700/50 p-6 space-y-3">
                                             {subject.components.map(component => (
                                                 <div
                                                     key={component.id}
-                                                    className="flex items-center gap-4 bg-slate-700/30 rounded-lg p-4 border border-slate-600/30"
+                                                    className="flex items-center gap-4 bg-slate-700/30 rounded-xl p-4 border border-slate-600/30 hover:border-slate-500 transition group"
                                                 >
-                                                    <div className="flex-1">
-                                                        <p className="font-semibold text-white">{component.component_type}</p>
-                                                        <p className="text-sm text-gray-400">
-                                                            Weight: {component.weight}% | Max: {component.max_marks}
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="font-bold text-white truncate">{component.component_type}</p>
+                                                        <p className="text-xs text-gray-400 font-medium">
+                                                            Max: <span className="text-gray-300">{component.max_marks}</span> | Weight: <span className="text-gray-300">{component.weight}%</span>
                                                         </p>
                                                     </div>
 
-                                                    <div className="flex items-center gap-2">
-                                                        <input
-                                                            type="number"
-                                                            min="0"
-                                                            max={component.max_marks}
-                                                            value={component.obtained_marks || ''}
-                                                            onChange={(e) =>
-                                                                handleUpdateMarks(component.id, Number(e.target.value))
-                                                            }
-                                                            placeholder="Marks"
-                                                            className="w-20 bg-slate-600/50 border border-slate-500 rounded-lg px-3 py-2 text-white text-sm text-center"
-                                                        />
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="flex items-center gap-2">
+                                                            <input
+                                                                type="number"
+                                                                min="0"
+                                                                max={component.max_marks}
+                                                                value={component.obtained_marks || ''}
+                                                                onChange={(e) =>
+                                                                    handleUpdateMarks(component.id, Number(e.target.value))
+                                                                }
+                                                                placeholder="0"
+                                                                className="w-20 bg-slate-600/50 border border-slate-500 rounded-lg px-3 py-2 text-white text-sm text-center font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                            />
 
-                                                        {component.obtained_marks !== null && (
-                                                            <span className="text-sm font-semibold text-blue-400 min-w-12">
-                                                                {((component.obtained_marks / component.max_marks) * 100).toFixed(0)}%
-                                                            </span>
-                                                        )}
+                                                            {component.obtained_marks !== null && (
+                                                                <span className="text-sm font-black text-blue-400 min-w-12 text-right">
+                                                                    {((component.obtained_marks / component.max_marks) * 100).toFixed(0)}%
+                                                                </span>
+                                                            )}
+                                                        </div>
 
                                                         <button
                                                             onClick={() => handleDeleteComponent(component.id)}
                                                             disabled={saving}
-                                                            className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition disabled:opacity-50"
+                                                            className="p-2.5 text-red-400 hover:bg-red-500/20 rounded-lg transition disabled:opacity-50 hover:scale-110"
                                                         >
-                                                            <Trash2 className="w-4 h-4" />
+                                                            <Trash2 className="w-5 h-5" />
                                                         </button>
                                                     </div>
                                                 </div>
                                             ))}
+
+                                            {subject.components.length === 0 && (
+                                                <p className="text-center text-gray-500 py-6 font-medium">No components added</p>
+                                            )}
                                         </div>
-
-                                        {subject.components.length === 0 && (
-                                            <p className="text-center text-gray-500 py-4">No components added yet</p>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-
-                        {allSubjects.length === 0 && (
-                            <div className="backdrop-blur-md bg-slate-700/30 rounded-2xl border border-slate-600/50 p-12 text-center">
-                                <AlertCircle className="w-12 h-12 text-gray-500 mx-auto mb-4" />
-                                <p className="text-gray-400">No subjects yet. Add a component to get started!</p>
-                            </div>
+                                    )}
+                                </div>
+                            ))
                         )}
                     </div>
                 </div>
