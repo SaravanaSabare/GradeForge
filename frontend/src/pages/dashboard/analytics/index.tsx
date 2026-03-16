@@ -4,7 +4,7 @@ import { useAuth } from '../../../contexts/AuthContext';
 import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 import { supabase } from '../../../services/supabase';
 import { TrendingUp, BarChart3, Activity, Target, Award, Zap, AlertCircle } from 'lucide-react';
-import { Line, Bar, Radar, Doughnut } from 'react-chartjs-2';
+import { Line, Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -57,7 +57,11 @@ export default function Analytics() {
     const [gpaProjection, setGpaProjection] = useState(0);
 
     useEffect(() => {
-        if (!user) return;
+        if (!user) {
+            console.log('No user, returning');
+            return;
+        }
+        console.log('Loading analytics for user:', user.id);
         loadAnalytics();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
@@ -65,11 +69,15 @@ export default function Analytics() {
     const loadAnalytics = async () => {
         setLoading(true);
         try {
+            console.log('Fetching semester grades...');
             const { data: gradeData, error } = await supabase
                 .from('semester_grades')
                 .select('*')
                 .eq('user_id', user!.id)
                 .order('semester');
+
+            console.log('Grade data:', gradeData);
+            console.log('Grade error:', error);
 
             if (error) {
                 console.error('Analytics error:', error);
@@ -177,67 +185,8 @@ export default function Analytics() {
                 label: 'Credits',
                 data: semesters.map((s) => s.credits),
                 backgroundColor: '#00E5FF',
-                borderColor: '#00E5FF',
-                borderWidth: 2,
-            },
-        ],
-    };
-
-    const subjectPerformance = {
-        labels: subjects
-            .slice(0, 8)
-            .map((s) => s.subject_name.substring(0, 12)),
-        datasets: [
-            {
-                label: 'Grade Points',
-                data: subjects.slice(0, 8).map((s) => s.grade_points),
-                backgroundColor: [
-                    '#7C5CFF',
-                    '#00E5FF',
-                    '#FF4D9D',
-                    '#FBBC05',
-                    '#10B981',
-                    '#F59E0B',
-                    '#8B5CF6',
-                    '#EC4899',
-                ],
-                borderWidth: 0,
-            },
-        ],
-    };
-
-    const skillRadar = {
-        labels: ['Consistency', 'Improvement', 'Performance', 'Workload', 'Recent Trend'],
-        datasets: [
-            {
-                label: 'Your Profile',
-                data: [
-                    (avgGpa / 10) * 100,
-                    Math.max(0, improvement + 5) * 10,
-                    (cgpa / 10) * 100,
-                    (semesters.length / 8) * 100,
-                    Math.max(0, (semesters[semesters.length - 1]?.gpa || 0) / 10) * 100,
-                ],
-                borderColor: '#7C5CFF',
-                backgroundColor: 'rgba(124, 92, 255, 0.2)',
-                pointBackgroundColor: '#7C5CFF',
-                borderWidth: 2,
-            },
-        ],
-    };
-
-    const gpaDistribution = {
-        labels: ['Excellent (8.5+)', 'Good (7-8.5)', 'Average (5-7)', 'Below Avg (<5)'],
-        datasets: [
-            {
-                data: [
-                    semesters.filter((s) => s.gpa >= 8.5).length,
-                    semesters.filter((s) => s.gpa >= 7 && s.gpa < 8.5).length,
-                    semesters.filter((s) => s.gpa >= 5 && s.gpa < 7).length,
-                    semesters.filter((s) => s.gpa < 5).length,
-                ],
-                backgroundColor: ['#00E5FF', '#7C5CFF', '#FBBC05', '#FF4D9D'],
-                borderWidth: 0,
+                borderRadius: 8,
+                borderSkipped: false,
             },
         ],
     };
@@ -316,7 +265,7 @@ export default function Analytics() {
 
     return (
         <DashboardLayout>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 32, maxWidth: 1400, margin: '0 auto' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 32, maxWidth: 1400, margin: '0 auto', padding: '20px' }}>
                 {/* Header */}
                 <div>
                     <h1 style={{ fontSize: 28, fontWeight: 700, letterSpacing: '-0.02em', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -342,72 +291,52 @@ export default function Analytics() {
                     {metricCard(<Activity size={20} />, 'Projected Next Sem', gpaProjection.toFixed(2), '#FBBC05')}
                 </div>
 
-                {/* Charts Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))', gap: 24 }}>
-                    {/* GPA Trend */}
-                    <div className="glass-panel" style={{ padding: 24 }}>
-                        <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 20 }}>📈 GPA Trend Over Time</h3>
-                        <Line data={gpaTrendData} options={chartOptions as any} height={300} />
-                    </div>
-
-                    {/* Credits Distribution */}
-                    <div className="glass-panel" style={{ padding: 24 }}>
-                        <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 20 }}>📊 Credits per Semester</h3>
-                        <Bar data={creditsDistribution} options={chartOptions as any} height={300} />
-                    </div>
-
-                    {/* Subject Performance */}
-                    <div className="glass-panel" style={{ padding: 24 }}>
-                        <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 20 }}>🎯 Top Subject Performance</h3>
-                        <Bar
-                            data={subjectPerformance}
-                            options={{
-                                ...chartOptions,
-                                indexAxis: 'y' as const,
-                            } as any}
-                            height={300}
-                        />
-                    </div>
-
-                    {/* Skill Radar */}
-                    <div className="glass-panel" style={{ padding: 24 }}>
-                        <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 20 }}>🎪 Performance Radar</h3>
-                        <Radar data={skillRadar} options={chartOptions as any} height={300} />
-                    </div>
-
-                    {/* GPA Distribution */}
-                    <div className="glass-panel" style={{ padding: 24 }}>
-                        <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 20 }}>🍰 GPA Distribution</h3>
-                        <Doughnut data={gpaDistribution} options={chartOptions as any} height={300} />
-                    </div>
-
-                    {/* Detailed Stats */}
-                    <div className="glass-panel" style={{ padding: 24 }}>
-                        <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 20 }}>📋 Detailed Statistics</h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                <span style={{ color: '#94a3b8' }}>Total Semesters</span>
-                                <span style={{ fontWeight: 600, color: '#cbd5e1' }}>{semesters.length}</span>
+                {/* Simple Data Display */}
+                <div className="glass-panel" style={{ padding: 24 }}>
+                    <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 20 }}>� Semester Summary</h3>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
+                        {semesters.map((sem) => (
+                            <div key={sem.semester} style={{ padding: 16, borderRadius: 12, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.02)' }}>
+                                <h4 style={{ fontSize: 14, fontWeight: 600, marginBottom: 12, color: '#cbd5e1' }}>Semester {sem.semester}</h4>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 13 }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8' }}>
+                                        <span>GPA:</span>
+                                        <span style={{ fontWeight: 600, color: '#00E5FF' }}>{sem.gpa.toFixed(2)}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8' }}>
+                                        <span>Credits:</span>
+                                        <span style={{ fontWeight: 600 }}>{sem.credits}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8' }}>
+                                        <span>Subjects:</span>
+                                        <span style={{ fontWeight: 600 }}>{sem.subjects}</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                <span style={{ color: '#94a3b8' }}>Total Subjects</span>
-                                <span style={{ fontWeight: 600, color: '#cbd5e1' }}>{subjects.length}</span>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Charts Grid - Optional */}
+                {semesters.length > 0 && (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))', gap: 24 }}>
+                        {/* GPA Trend */}
+                        <div className="glass-panel" style={{ padding: 24 }}>
+                            <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 20 }}>📈 GPA Trend Over Time</h3>
+                            <div style={{ height: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
+                                <Line data={gpaTrendData} options={chartOptions as any} height={300} />
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                <span style={{ color: '#94a3b8' }}>Total Credits Earned</span>
-                                <span style={{ fontWeight: 600, color: '#cbd5e1' }}>
-                                    {semesters.reduce((sum, s) => sum + s.credits, 0)}
-                                </span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '10px 0' }}>
-                                <span style={{ color: '#94a3b8' }}>Grade Consistency</span>
-                                <span style={{ fontWeight: 600, color: '#cbd5e1' }}>
-                                    {(((highestSem - lowestSem) / 10) * 100).toFixed(0)}% variance
-                                </span>
+                        </div>
+
+                        {/* Credits Distribution */}
+                        <div className="glass-panel" style={{ padding: 24 }}>
+                            <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 20 }}>📊 Credits per Semester</h3>
+                            <div style={{ height: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
+                                <Bar data={creditsDistribution} options={chartOptions as any} height={300} />
                             </div>
                         </div>
                     </div>
-                </div>
+                )}
 
                 {/* Insights */}
                 <div className="glass-panel" style={{ padding: 24 }}>
