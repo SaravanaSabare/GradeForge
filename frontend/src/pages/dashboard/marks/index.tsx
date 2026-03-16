@@ -21,6 +21,7 @@ import {
     updateMarkComponent,
     deleteMarkComponent,
 } from '../../../services/marks';
+import './styles.css';
 
 export default function MarkCalculator() {
     const { user } = useAuth();
@@ -146,8 +147,8 @@ export default function MarkCalculator() {
     if (loading) {
         return (
             <DashboardLayout>
-                <div className="flex items-center justify-center h-screen">
-                    <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+                <div className="marks-container flex items-center justify-center">
+                    <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
                 </div>
             </DashboardLayout>
         );
@@ -155,70 +156,54 @@ export default function MarkCalculator() {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-slate-900 p-4 sm:p-8">
-                <div className="max-w-7xl mx-auto">
+            <div className="marks-container">
+                <div className="marks-wrapper">
                     {/* Header */}
-                    <div className="mb-12">
-                        <div className="flex items-start justify-between mb-6">
-                            <div>
-                                <div className="flex items-center gap-3 mb-2">
-                                    <div className="p-3 bg-linear-to-br from-amber-500 to-orange-600 rounded-xl">
-                                        <Award className="w-6 h-6 text-white" />
-                                    </div>
-                                    <h1 className="text-4xl font-black text-white">Mark Calculator</h1>
-                                </div>
-                                <p className="text-gray-400 text-lg">Track and analyze your internal marks with weighted grading</p>
+                    <div className="marks-header">
+                        <div className="marks-title">
+                            <div className="marks-icon">
+                                <Award className="w-6 h-6 text-white" />
                             </div>
+                            <h1>Mark Calculator</h1>
                         </div>
+                        <p className="marks-subtitle">Track and analyze your internal marks with weighted grading</p>
                     </div>
 
                     {/* Stats Grid */}
                     {allSubjects.length > 0 && (
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                            <div className="group relative bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition">
-                                <div className="absolute inset-0 bg-linear-to-br from-blue-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition" />
-                                <div className="relative">
-                                    <p className="text-gray-400 text-sm font-medium mb-1">Total Subjects</p>
-                                    <p className="text-4xl font-black text-blue-400">{allSubjects.length}</p>
+                        <div className="stats-grid">
+                            <div className="stat-card">
+                                <div className="stat-label">Total Subjects</div>
+                                <div className="stat-value blue">{allSubjects.length}</div>
+                            </div>
+
+                            <div className="stat-card">
+                                <div className="stat-label">Average %</div>
+                                <div className="stat-value purple">
+                                    {(allSubjects.reduce((sum, s) => sum + s.percentage, 0) / allSubjects.length).toFixed(1)}%
                                 </div>
                             </div>
 
-                            <div className="group relative bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition">
-                                <div className="absolute inset-0 bg-linear-to-br from-purple-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition" />
-                                <div className="relative">
-                                    <p className="text-gray-400 text-sm font-medium mb-1">Average %</p>
-                                    <p className="text-4xl font-black text-purple-400">
-                                        {(allSubjects.reduce((sum, s) => sum + s.percentage, 0) / allSubjects.length).toFixed(1)}%
-                                    </p>
+                            <div className="stat-card">
+                                <div className="stat-label">Highest</div>
+                                <div className="stat-value green">
+                                    {Math.max(...allSubjects.map(s => s.percentage)).toFixed(1)}%
                                 </div>
                             </div>
 
-                            <div className="group relative bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700/50 hover:border-green-500/50 transition">
-                                <div className="absolute inset-0 bg-linear-to-br from-green-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition" />
-                                <div className="relative">
-                                    <p className="text-gray-400 text-sm font-medium mb-1">Highest</p>
-                                    <p className="text-4xl font-black text-green-400">
-                                        {Math.max(...allSubjects.map(s => s.percentage)).toFixed(1)}%
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="group relative bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700/50 hover:border-red-500/50 transition">
-                                <div className="absolute inset-0 bg-linear-to-br from-red-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition" />
-                                <div className="relative">
-                                    <p className="text-gray-400 text-sm font-medium mb-1">Lowest</p>
-                                    <p className="text-4xl font-black text-red-400">
-                                        {Math.min(...allSubjects.map(s => s.percentage)).toFixed(1)}%
-                                    </p>
+                            <div className="stat-card">
+                                <div className="stat-label">Lowest</div>
+                                <div className="stat-value red">
+                                    {Math.min(...allSubjects.map(s => s.percentage)).toFixed(1)}%
                                 </div>
                             </div>
                         </div>
                     )}
 
                     {/* Subject Panel */}
-                    <div className={`grid ${selectedSubject ? 'grid-cols-1 lg:grid-cols-3' : 'grid-cols-1'} gap-6 mb-8`}>
-                        <div className="lg:col-span-2 bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700/50">
-                            <label className="block text-sm font-bold text-white mb-3 uppercase tracking-wider">Select Subject</label>
+                    <div className={`subject-panel ${selectedSubject ? 'two-col' : ''}`}>
+                        <div className="form-group">
+                            <label className="form-label">Select Subject</label>
                             <input
                                 type="text"
                                 placeholder="Type subject name..."
@@ -227,7 +212,7 @@ export default function MarkCalculator() {
                                     setSelectedSubject(e.target.value);
                                     setNewComponent({ component_type: 'Quiz', max_marks: 10, weight: 10, obtained_marks: '' });
                                 }}
-                                className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg font-medium"
+                                className="form-input"
                                 list="subjects"
                             />
                             <datalist id="subjects">
@@ -238,8 +223,8 @@ export default function MarkCalculator() {
                         </div>
 
                         {selectedSubject && (
-                            <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700/50">
-                                <label className="block text-sm font-bold text-white mb-3 uppercase tracking-wider">Target %</label>
+                            <div className="form-group">
+                                <label className="form-label">Target %</label>
                                 <input
                                     type="number"
                                     min="0"
@@ -249,31 +234,31 @@ export default function MarkCalculator() {
                                     onChange={(e) =>
                                         setTargetMarks({ ...targetMarks, [selectedSubject]: Number(e.target.value) })
                                     }
-                                    className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 text-lg font-medium"
+                                    className="form-input"
                                 />
                             </div>
                         )}
                     </div>
 
                     {/* Add Component Button */}
-                    <div className="mb-8">
+                    <div style={{ marginBottom: '2rem' }}>
                         <button
                             onClick={() => setShowAddComponent(!showAddComponent)}
-                            className="group w-full bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold px-6 py-4 rounded-2xl transition shadow-lg hover:shadow-blue-500/20 flex items-center justify-center gap-3 text-lg"
+                            className="btn btn-primary"
                         >
-                            <Plus className="w-6 h-6 group-hover:scale-110 transition" />
+                            <Plus className="w-6 h-6" />
                             Add Component
                         </button>
                     </div>
 
                     {/* Add Component Form */}
                     {showAddComponent && (
-                        <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl p-8 border border-slate-700/50 mb-8">
-                            <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                        <div className="component-form">
+                            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'white', margin: '0 0 1.5rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <Sparkles className="w-5 h-5 text-amber-400" />
                                 New Component
                             </h3>
-                            <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
+                            <div className="component-grid">
                                 <input
                                     type="text"
                                     placeholder="Type"
@@ -281,7 +266,7 @@ export default function MarkCalculator() {
                                     onChange={(e) =>
                                         setNewComponent({ ...newComponent, component_type: e.target.value })
                                     }
-                                    className="bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                                    className="form-input"
                                 />
 
                                 <input
@@ -291,7 +276,7 @@ export default function MarkCalculator() {
                                     onChange={(e) =>
                                         setNewComponent({ ...newComponent, max_marks: Number(e.target.value) })
                                     }
-                                    className="bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                                    className="form-input"
                                 />
 
                                 <input
@@ -301,7 +286,7 @@ export default function MarkCalculator() {
                                     onChange={(e) =>
                                         setNewComponent({ ...newComponent, weight: Number(e.target.value) })
                                     }
-                                    className="bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                                    className="form-input"
                                 />
 
                                 <input
@@ -311,13 +296,14 @@ export default function MarkCalculator() {
                                     onChange={(e) =>
                                         setNewComponent({ ...newComponent, obtained_marks: e.target.value })
                                     }
-                                    className="bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                                    className="form-input"
                                 />
 
                                 <button
                                     onClick={handleAddComponent}
                                     disabled={saving}
-                                    className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white font-bold px-6 py-3 rounded-xl transition shadow-lg hover:shadow-green-500/20"
+                                    className="btn btn-save"
+                                    style={{ opacity: saving ? 0.6 : 1, cursor: saving ? 'not-allowed' : 'pointer' }}
                                 >
                                     {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
                                 </button>
@@ -326,71 +312,55 @@ export default function MarkCalculator() {
                     )}
 
                     {/* Subjects */}
-                    <div className="space-y-4">
+                    <div className="subject-list">
                         {allSubjects.length === 0 ? (
-                            <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl border border-slate-700/50 p-12 text-center">
-                                <AlertCircle className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-                                <p className="text-gray-400 text-lg">No subjects yet. Add a component to get started!</p>
+                            <div className="empty-state">
+                                <AlertCircle className="empty-icon" />
+                                <p className="empty-text">No subjects yet. Add a component to get started!</p>
                             </div>
                         ) : (
                             allSubjects.map(subject => (
-                                <div
-                                    key={subject.subject_name}
-                                    className="group bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl border border-slate-700/50 overflow-hidden hover:border-slate-600 transition"
-                                >
-                                    {/* Subject Header */}
-                                    <div
-                                        onClick={() =>
-                                            setExpandedSubject(expandedSubject === subject.subject_name ? null : subject.subject_name)
-                                        }
-                                        className="p-6 cursor-pointer hover:bg-slate-700/30 transition"
-                                    >
-                                        <div className="flex items-center justify-between gap-4 mb-4">
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-3 mb-3 flex-wrap">
-                                                    <h3 className="text-2xl font-black text-white truncate">{subject.subject_name}</h3>
-                                                    <span className={`px-4 py-1 rounded-full text-sm font-bold ${
-                                                        subject.grade === 'O' ? 'bg-orange-500/20 text-orange-300' :
-                                                        subject.grade === 'A+' ? 'bg-red-500/20 text-red-300' :
-                                                        subject.grade === 'A' ? 'bg-purple-500/20 text-purple-300' :
-                                                        subject.grade === 'B+' ? 'bg-blue-500/20 text-blue-300' :
-                                                        'bg-gray-500/20 text-gray-300'
-                                                    }`}>
+                                <div key={subject.subject_name} className="subject-card">
+                                    <div className="subject-header" onClick={() => setExpandedSubject(expandedSubject === subject.subject_name ? null : subject.subject_name)}>
+                                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+                                            <div style={{ flex: 1, minWidth: 0 }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
+                                                    <h3 className="subject-name">{subject.subject_name}</h3>
+                                                    <span className={`grade-badge ${subject.grade}`}>
                                                         {subject.grade}
                                                     </span>
                                                 </div>
-                                                <div className="flex flex-wrap gap-4 text-sm text-gray-400">
-                                                    <span className="font-semibold">Marks: <span className="text-white">{subject.total_obtained.toFixed(1)}/{subject.total_max}</span></span>
-                                                    <span className="font-semibold">Score: <span className="text-white">{subject.percentage.toFixed(1)}%</span></span>
+                                                <div className="subject-info">
+                                                    <span>Marks: <strong>{subject.total_obtained.toFixed(1)}/{subject.total_max}</strong></span>
+                                                    <span>Score: <strong>{subject.percentage.toFixed(1)}%</strong></span>
                                                 </div>
                                             </div>
 
-                                            <div className="flex items-center gap-4">
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexShrink: 0 }}>
                                                 {targetMarks[subject.subject_name] && (
-                                                    <div className="text-right bg-slate-700/30 rounded-xl px-4 py-3 min-w-max">
-                                                        <p className="text-xs text-gray-400 uppercase font-bold tracking-wider">Target</p>
-                                                        <p className="text-xl font-black text-white">{targetMarks[subject.subject_name]}%</p>
+                                                    <div style={{ textAlign: 'right', background: 'rgba(15, 23, 42, 0.5)', borderRadius: '0.75rem', padding: '0.75rem 1rem', whiteSpace: 'nowrap' }}>
+                                                        <p style={{ fontSize: '0.75rem', color: '#9ca3af', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0, marginBottom: '0.25rem' }}>Target</p>
+                                                        <p style={{ fontSize: '1.5rem', fontWeight: 900, color: 'white', margin: 0 }}>{targetMarks[subject.subject_name]}%</p>
                                                         {canAchieveTarget(subject) ? (
-                                                            <p className="text-xs text-green-400 font-bold mt-1">
-                                                                Need: {calculateRequiredMarks(subject)?.toFixed(1)} more
+                                                            <p style={{ fontSize: '0.75rem', color: '#4ade80', fontWeight: 700, marginTop: '0.25rem', margin: 0 }}>
+                                                                Need: {calculateRequiredMarks(subject)?.toFixed(1)}
                                                             </p>
                                                         ) : (
-                                                            <p className="text-xs text-red-400 font-bold mt-1">Not achievable</p>
+                                                            <p style={{ fontSize: '0.75rem', color: '#f87171', fontWeight: 700, marginTop: '0.25rem', margin: 0 }}>Not achievable</p>
                                                         )}
                                                     </div>
                                                 )}
                                                 {expandedSubject === subject.subject_name ? (
-                                                    <ChevronUp className="w-6 h-6 text-blue-400 shrink-0" />
+                                                    <ChevronUp className="w-6 h-6 text-blue-400" />
                                                 ) : (
-                                                    <ChevronDown className="w-6 h-6 text-gray-500 shrink-0" />
+                                                    <ChevronDown className="w-6 h-6 text-gray-500" />
                                                 )}
                                             </div>
                                         </div>
 
-                                        {/* Progress Bar */}
-                                        <div className="h-3 bg-slate-700/50 rounded-full overflow-hidden">
+                                        <div className="progress-bar">
                                             <div
-                                                className="h-full bg-linear-to-r from-blue-500 to-cyan-400 transition-all duration-500"
+                                                className="progress-fill"
                                                 style={{ width: `${Math.min(subject.percentage, 100)}%` }}
                                             />
                                         </div>
@@ -398,44 +368,39 @@ export default function MarkCalculator() {
 
                                     {/* Components List */}
                                     {expandedSubject === subject.subject_name && (
-                                        <div className="bg-slate-900/50 border-t border-slate-700/50 p-6 space-y-3">
+                                        <div className="components-list">
                                             {subject.components.map(component => (
-                                                <div
-                                                    key={component.id}
-                                                    className="flex items-center gap-4 bg-slate-700/30 rounded-xl p-4 border border-slate-600/30 hover:border-slate-500 transition group"
-                                                >
-                                                    <div className="flex-1 min-w-0">
-                                                        <p className="font-bold text-white truncate">{component.component_type}</p>
-                                                        <p className="text-xs text-gray-400 font-medium">
-                                                            Max: <span className="text-gray-300">{component.max_marks}</span> | Weight: <span className="text-gray-300">{component.weight}%</span>
+                                                <div key={component.id} className="component-item">
+                                                    <div className="component-details">
+                                                        <p className="component-type">{component.component_type}</p>
+                                                        <p className="component-meta">
+                                                            Max: <strong>{component.max_marks}</strong> | Weight: <strong>{component.weight}%</strong>
                                                         </p>
                                                     </div>
 
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="flex items-center gap-2">
-                                                            <input
-                                                                type="number"
-                                                                min="0"
-                                                                max={component.max_marks}
-                                                                value={component.obtained_marks || ''}
-                                                                onChange={(e) =>
-                                                                    handleUpdateMarks(component.id, Number(e.target.value))
-                                                                }
-                                                                placeholder="0"
-                                                                className="w-20 bg-slate-600/50 border border-slate-500 rounded-lg px-3 py-2 text-white text-sm text-center font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                            />
+                                                    <div className="component-controls">
+                                                        <input
+                                                            type="number"
+                                                            min="0"
+                                                            max={component.max_marks}
+                                                            value={component.obtained_marks || ''}
+                                                            onChange={(e) =>
+                                                                handleUpdateMarks(component.id, Number(e.target.value))
+                                                            }
+                                                            placeholder="0"
+                                                            className="marks-input"
+                                                        />
 
-                                                            {component.obtained_marks !== null && (
-                                                                <span className="text-sm font-black text-blue-400 min-w-12 text-right">
-                                                                    {((component.obtained_marks / component.max_marks) * 100).toFixed(0)}%
-                                                                </span>
-                                                            )}
-                                                        </div>
+                                                        {component.obtained_marks !== null && (
+                                                            <span className="marks-percentage">
+                                                                {((component.obtained_marks / component.max_marks) * 100).toFixed(0)}%
+                                                            </span>
+                                                        )}
 
                                                         <button
                                                             onClick={() => handleDeleteComponent(component.id)}
                                                             disabled={saving}
-                                                            className="p-2.5 text-red-400 hover:bg-red-500/20 rounded-lg transition disabled:opacity-50 hover:scale-110"
+                                                            className="btn-delete"
                                                         >
                                                             <Trash2 className="w-5 h-5" />
                                                         </button>
@@ -444,7 +409,7 @@ export default function MarkCalculator() {
                                             ))}
 
                                             {subject.components.length === 0 && (
-                                                <p className="text-center text-gray-500 py-6 font-medium">No components added</p>
+                                                <p style={{ textAlign: 'center', color: '#64748b', padding: '1.5rem', fontWeight: 500, margin: 0 }}>No components added</p>
                                             )}
                                         </div>
                                     )}
