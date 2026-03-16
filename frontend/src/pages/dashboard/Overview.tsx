@@ -103,6 +103,9 @@ export default function DashboardOverview() {
                             <Link to="/dashboard/materials" className="btn btn-secondary" style={{ fontSize: 13 }}>
                                 <BookOpen size={15} /> Study Materials
                             </Link>
+                            <Link to="/dashboard/analytics" className="btn btn-secondary" style={{ fontSize: 13 }}>
+                                📊 View Analytics
+                            </Link>
                         </div>
                     </div>
                 </div>
